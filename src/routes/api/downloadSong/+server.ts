@@ -3,12 +3,12 @@ import type { RequestHandler } from './$types';
 import { exec } from 'child_process';
 import fs from 'fs';
 import { join } from 'path';
-import { getSongInfo, getSongPath } from '$lib/songs';
-import type { Song } from '$lib/types';
+import { refreshSongs } from '$lib/songs';
+import { getSongFromId } from '$lib/db/song';
 
 async function downloadSong(songId: string) {
 	const completeDir = './songs';
-	const incompleteDir = completeDir + '/incomplete/';
+	const incompleteDir = completeDir + '/.incomplete/';
 	if (!fs.existsSync(incompleteDir)) {
 		fs.mkdirSync(incompleteDir, { recursive: true });
 	}
@@ -21,10 +21,9 @@ async function downloadSong(songId: string) {
       -o "${incompleteDir}/${songId}.%(ext)s" \
       "https://www.youtube.com/watch?v=${songId}"`;
 
-	return new Promise<Song>((resolve, reject) => {
+	return new Promise<void>((resolve, reject) => {
 		exec(command, async (error) => {
 			if (error) {
-
 				// Delete any incomplete file
 				const files = fs.readdirSync(incompleteDir);
 				files.forEach((file) => {
@@ -44,28 +43,23 @@ async function downloadSong(songId: string) {
 				fs.renameSync(oldPath, newPath);
 			});
 
-			const path = await getSongPath(songId);
-			if (!path) {
-				return reject('Song not found.');
-			}
-			const song = await getSongInfo(path);
-
-			resolve(song);
+			resolve();
 		});
 	});
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { songId } = await request.json();
-  if (!songId) {
-    throw new Error('Song ID is required.');
-  }
+	const { songId } = await request.json();
+	if (!songId) {
+		throw new Error('Song ID is required.');
+	}
 
 	try {
-		const song = await downloadSong(songId);
+		await downloadSong(songId);
+		await refreshSongs();
+		const song = await getSongFromId(songId);
 		return json({ song, success: true, message: 'Song downloaded successfully.' });
-	}
-	catch (error) {
+	} catch (error) {
 		return json({ success: false, message: error instanceof Error ? error.message : error });
 	}
 };

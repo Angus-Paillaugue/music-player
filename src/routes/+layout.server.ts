@@ -1,8 +1,11 @@
-import type { LayoutServerLoad, Actions } from './$types';
-import { getAllSongs, getPlaylists } from '$lib/songs';
+import type { LayoutServerLoad } from './$types';
+import { getAllSongs } from '$lib/db/song';
+import { getAllPlaylists } from '$lib/db/playlist';
+import { getAllAlbums } from '$lib/db/album';
 
 export const load = (async () => {
-  const songs = await getAllSongs();
-  const playlists = await getPlaylists();
-  return { songs, playlists };
+	const songs = await getAllSongs();
+	const playlists = await getAllPlaylists();
+	const albums = await getAllAlbums();
+	return { songs, playlists, albums };
 }) satisfies LayoutServerLoad;

@@ -1,0 +1,11 @@
+services:
+  music-player:
+    image: music-player:latest
+    container_name: music-player
+    environment:
+      NODE_ENV: production
+      PORT: 8089
+    volumes:
+      - ./songs:/app/songs
+    ports:
+      - '8089:8089'

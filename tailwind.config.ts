@@ -1,5 +1,6 @@
 import { fontFamily } from 'tailwindcss/defaultTheme';
 import type { Config } from 'tailwindcss';
+import ContainerQueries from '@tailwindcss/container-queries';
 
 const config: Config = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
@@ -22,16 +23,16 @@ const config: Config = {
 					foreground: 'hsl(var(--destructive-foreground) / <alpha-value>)'
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted) / <alpha-value>)',
-				},
+					DEFAULT: 'hsl(var(--muted) / <alpha-value>)'
+				}
 			},
 			fontFamily: {
 				sans: ['Poppins, sans-serif', ...fontFamily.sans],
 				mono: ['JetBrains Mono', ...fontFamily.mono]
-			},
+			}
 		}
 	},
-	plugins: []
+	plugins: [ContainerQueries]
 };
 
 export default config;

@@ -1,21 +1,20 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { createPlaylist } from '$lib/songs';
+import { createPlaylist } from '$lib/db/playlist';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { name } = await request.json();
-	console.log(name);
+	const { title } = await request.json();
 
 	try {
-		await createPlaylist(name);
+		const playlistId = await createPlaylist(title);
 		const playlist = {
-			name,
+			id: playlistId,
+			title,
 			songs: []
-		}
+		};
 
 		return json({ playlist });
-	}catch(e){
+	} catch (e) {
 		return json({ error: e instanceof Error ? e.message : e }, { status: 500 });
 	}
-
 };
