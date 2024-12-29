@@ -13,3 +13,12 @@ export function formatTime(secs: number) {
 
 	return `${pad(m)}:${pad(s)}`;
 }
+
+export function generateRandomString(length: number) {
+	return new Array(length)
+		.fill(0)
+		.map((c) =>
+			(+c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))).toString(16)
+		)
+		.join('');
+}

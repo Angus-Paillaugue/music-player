@@ -8,7 +8,7 @@
 	import { cn, formatTime } from '$lib/utils';
 	import Cover from '../Cover.svelte';
 	import { currentlyPlayingSong, isPlayingSong, songs } from '$lib/stores';
-	import Track from '../Track.svelte';
+	import Track from '../Track/Track.svelte';
 	import AddToPlaylist from '../add-to-playlist.svelte';
 
 	let player = $state<Player>();
@@ -53,6 +53,9 @@
 
 	function onWindowKeyDown(e: KeyboardEvent) {
 		if (!player?.song) return;
+		// If is focused on an input, don't trigger the shortcuts
+		if (document.activeElement?.tagName === 'INPUT') return;
+
 		switch (e.key) {
 			case ' ':
 				e.preventDefault();
@@ -116,11 +119,11 @@
 								onclick={() => player?.previous()}
 								class="size-10 rounded-full p-2 transition-all hover:bg-background"
 							>
-								<SkipBack class="size-full hover:fill-primary" />
+								<SkipBack class="size-full hover:fill-foreground" />
 							</button>
 							<button
 								onclick={() => player?.togglePlay()}
-								class="size-16 rounded-full bg-primary p-4 text-background transition-all"
+								class="size-16 rounded-full bg-foreground p-4 text-background transition-all"
 							>
 								{#if player.isPlaying}
 									<span in:scale class="size-full">
@@ -136,7 +139,7 @@
 								onclick={() => player?.next()}
 								class="size-10 rounded-full p-2 transition-all hover:bg-background"
 							>
-								<SkipForward class="size-full hover:fill-primary" />
+								<SkipForward class="size-full hover:fill-foreground" />
 							</button>
 						</div>
 						<!-- Progress -->
@@ -148,7 +151,7 @@
 								onclick={onProgressBarClick}
 							>
 								<div
-									class="h-full bg-primary transition-[width] duration-100 ease-linear"
+									class="h-full bg-foreground transition-[width] duration-100 ease-linear"
 									style="width: {player?.percentage}%"
 								></div>
 							</div>
@@ -191,7 +194,7 @@
 			onclick={onProgressBarClick}
 		>
 			<div
-				class="h-full rounded-r-full bg-primary transition-[width] duration-100 ease-linear"
+				class="h-full rounded-r-full bg-foreground transition-[width] duration-100 ease-linear"
 				style="width: {player.percentage}%"
 			></div>
 		</div>
@@ -206,7 +209,7 @@
 						onclick={() => player?.previous()}
 						class="size-10 rounded-full p-2 transition-all hover:bg-background max-md:hidden"
 					>
-						<SkipBack class="size-full hover:fill-primary" />
+						<SkipBack class="size-full hover:fill-foreground" />
 					</button>
 					<button
 						onclick={() => player?.togglePlay()}
@@ -226,7 +229,7 @@
 						onclick={() => player?.next()}
 						class="size-10 rounded-full p-2 transition-all hover:bg-background max-md:hidden"
 					>
-						<SkipForward class="size-full hover:fill-primary" />
+						<SkipForward class="size-full hover:fill-foreground" />
 					</button>
 				</div>
 				<p class="font-mono text-sm text-muted max-md:hidden">

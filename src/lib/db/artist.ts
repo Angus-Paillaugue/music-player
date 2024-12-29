@@ -10,7 +10,18 @@ export async function getAllArtists() {
 }
 
 export async function createArtist(artist: Artist): Promise<number> {
-	const query = 'INSERT INTO artist (name) VALUES (?)';
-	const [rows] = await db.execute<ResultSetHeader>(query, [artist.name]);
-	return rows.insertId;
+	const exists = async () => {
+		const query = 'SELECT * FROM artist WHERE name = ?';
+		const [rows] = await db.execute<RowDataPacket[]>(query, [artist.name]);
+		return rows as Artist[];
+	};
+
+	const artistExists = await exists();
+	if (artistExists.length > 0) {
+		return (artistExists[0] as unknown as Artist).id;
+	} else {
+		const query = 'INSERT INTO artist (name) VALUES (?)';
+		const [rows] = await db.execute<ResultSetHeader>(query, [artist.name]);
+		return rows.insertId;
+	}
 }

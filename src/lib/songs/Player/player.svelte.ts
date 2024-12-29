@@ -1,6 +1,6 @@
 import type { Song } from '$lib/types';
 import { get } from 'svelte/store';
-import { songs } from '$lib/stores';
+import { songsToPlay } from '$lib/stores';
 
 export class Player {
 	private _playerElement: HTMLAudioElement;
@@ -106,7 +106,7 @@ export class Player {
 			},
 			{ once: true }
 		);
-		this._songIndex = get(songs)
+		this._songIndex = get(songsToPlay)
 			.map((s) => s.filePath)
 			.indexOf(song.filePath);
 	}
@@ -117,15 +117,15 @@ export class Player {
 
 	next() {
 		if (!this._song) return;
-		const nextIndex = (this._songIndex + 1) % get(songs).length;
-		this.changeSong(get(songs)[nextIndex]);
+		const nextIndex = (this._songIndex + 1) % get(songsToPlay).length;
+		this.changeSong(get(songsToPlay)[nextIndex]);
 		this._playerElement.dispatchEvent(new Event('songChange'));
 	}
 
 	previous() {
 		if (!this._song) return;
-		const previousIndex = (this._songIndex - 1 + get(songs).length) % get(songs).length;
-		this.changeSong(get(songs)[previousIndex]);
+		const previousIndex = (this._songIndex - 1 + get(songsToPlay).length) % get(songsToPlay).length;
+		this.changeSong(get(songsToPlay)[previousIndex]);
 		this._playerElement.dispatchEvent(new Event('songChange'));
 	}
 

@@ -3,17 +3,22 @@
 - [ ] Make the sidebar responsive
 - [ ] Add loading states to actions
 - [ ] Add page loaders
-- [ ] Add toasts
-- [ ] Song
-  - [ ] Edit metadata
-  - [ ] Delete song
+- [x] Toasts
+  - [x] Add them
+  - [ ] Make them pretty
+- [x] Song
+  - [x] Edit metadata
+  - [x] Add to playlist
+  - [x] Delete song
+  - [x] Download
 - [ ] Album
   - [ ] Album page
 - [ ] Artist
   - [ ] Gather artist data
   - [ ] Artist page
-- [ ] Playlist
-  - [ ] Delete playlists
-  - [ ] Edit playlist name
-  - [ ] Add/Remove playlist song
-  - [ ] Fix next and previous not working as it should
+- [x] Playlist
+  - [x] Delete playlists
+  - [x] Download
+  - [x] Edit playlist name
+  - [x] Remove song from playlist
+  - [x] Fix next and previous not working as it should

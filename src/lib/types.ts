@@ -1,3 +1,5 @@
+export const songFormat = ['flac', 'mp3'] as const;
+
 export interface Song {
 	id: string;
 	title: string;
@@ -5,14 +7,14 @@ export interface Song {
 	duration: number;
 	album?: Album;
 	year: number;
-	mediaType: 'flac';
+	mediaType: typeof songFormat[number];
 	addedAt: Date;
 	filePath: string;
 	coverPath: string;
 }
 
 export interface Playlist {
-	id: number;
+	id: string;
 	title: string;
 	songs: Song[];
 }

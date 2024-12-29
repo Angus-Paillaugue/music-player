@@ -1,5 +1,6 @@
 import { getSongFromId } from '$lib/db/song';
 import type { Playlist, Song } from '$lib/types';
+import { generateRandomString } from '$lib/utils';
 import db from '.';
 import type { ResultSetHeader, RowDataPacket } from 'mysql2';
 
@@ -9,7 +10,7 @@ async function getPlaylistSongs(id: number): Promise<Song[]> {
 
 	const songs: Song[] = [];
 	for(const row of songsIds) {
-		const { songId } = row as { songId: string };
+		const { songId } = row as { songId: Song['id'] };
 		const song = await getSongFromId(songId);
 		songs.push(song);
 	}
@@ -27,29 +28,42 @@ export async function getAllPlaylists() {
 	return playlists as Playlist[];
 }
 
-export async function createPlaylist(title: string) {
-	const query = `INSERT INTO playlist (title) VALUES (?)`;
-	const [res] = await db.execute<ResultSetHeader>(query, [title]);
-	return res.insertId;
+export async function createPlaylist(title: Playlist['title'], id: Playlist['id'] | null = null) {
+	const query = `INSERT INTO playlist (id, title) VALUES (?, ?)`;
+	id ??= generateRandomString(34); // generate a playlist id (length for a playlist Id is 34)
+	await db.execute<ResultSetHeader>(query, [id, title]);
+	return id;
 }
 
-export async function addSongToPlaylist(song: Song, playlist: Playlist) {
+export async function addSongToPlaylist(songId: Song['id'], playlistId: Playlist['id']) {
 	const query = `INSERT INTO beInPlaylist (songId, playlistId) VALUES (?, ?)`;
-	await db.execute(query, [song.id, playlist.id]);
+	await db.execute(query, [songId, playlistId]);
 }
 
-export async function removeSongFromPlaylist(song: Song, playlist: Playlist) {
+export async function removeSongFromPlaylist(songId: Song['id'], playlistId: Playlist['id']) {
 	const query = `DELETE FROM beInPlaylist WHERE songId = ? AND playlistId = ?`;
-	await db.execute(query, [song.id, playlist.id]);
+	await db.execute(query, [songId, playlistId]);
 }
 
 export async function toggleSongFromPlaylist(song: Song, playlist: Playlist) {
-	const isInPlaylist = playlist.songs.map(s => s.id).includes(song.id);
-	if(isInPlaylist) {
-		await removeSongFromPlaylist(song, playlist)
-	}else {
-		await addSongToPlaylist(song, playlist);
+	const isInPlaylist = playlist.songs.map((s) => s.id).includes(song.id);
+	if (isInPlaylist) {
+		await removeSongFromPlaylist(song.id, playlist.id);
+	} else {
+		await addSongToPlaylist(song.id, playlist.id);
 	}
 
 	return !isInPlaylist;
+}
+
+export async function savePlaylist(playlist: Playlist) {
+	const query = `UPDATE playlist SET title = ? WHERE id = ?`;
+	await db.execute(query, [playlist.title, playlist.id]);
+}
+
+export async function deletePlaylist(id: Playlist['id']) {
+	const deleteSongsInPlaylistQuery = `DELETE FROM beInPlaylist WHERE playlistId = ?`;
+	await db.execute(deleteSongsInPlaylistQuery, [id]);
+	const deletePlaylistQuery = `DELETE FROM playlist WHERE id = ?`;
+	await db.execute(deletePlaylistQuery, [id]);
 }

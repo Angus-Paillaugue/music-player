@@ -11,7 +11,7 @@
 
 <div
 	class={cn(
-		'flex flex-row items-center gap-4 rounded-lg border border-destructive bg-secondary p-4 text-primary',
+		'flex flex-row items-center gap-4 rounded-lg border border-destructive bg-secondary p-4 text-foreground',
 		className
 	)}
 	role="alert"

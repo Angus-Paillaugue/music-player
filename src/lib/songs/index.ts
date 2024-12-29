@@ -1,12 +1,10 @@
 import type { Song } from '$lib/types';
-import { mkdirSync } from 'fs';
-import { readdir, stat, writeFile } from 'fs/promises';
+import { readdir, rename, stat } from 'fs/promises';
 import { parseFile } from 'music-metadata';
 import path from 'path';
 import { searchForWorkspaceRoot } from 'vite';
 import { addSong, getAllSongs as getAllSongsFomDatabase, getSongFileName } from '$lib/db/song';
-
-const getSongPathWithoutPlaylist = (path: string) => path.replace(/songs\/[^/]+\//, 'songs/');
+import nodeId3 from 'node-id3';
 
 const listFilesInDir = async (dir: string) => {
 	return (await readdir(path.join(__dirname, dir), { withFileTypes: true }))
@@ -17,18 +15,16 @@ const listFilesInDir = async (dir: string) => {
 const __dirname = searchForWorkspaceRoot(import.meta.dirname);
 export const songsDirName = 'songs';
 export const coverDirName = '.cover';
-const songsDir = path.join(__dirname, songsDirName);
-const coverDir = path.join(songsDir, coverDirName);
+export const incompleteDirName = '.incomplete';
+export const songsDir = path.join(__dirname, songsDirName);
+export const coverDir = path.join(songsDir, coverDirName);
+export const incompleteDir = path.join(songsDir, incompleteDirName);
 
-// Create the directories if it doesn't exist
-mkdirSync(path.join(songsDir, '.incomplete'), { recursive: true });
-mkdirSync(path.join(coverDir), { recursive: true });
-
-function getSongId(path: string): string {
+export function getSongIdFromFilename(path: string): string {
 	return path.split('/').pop()?.split('.').shift() as string;
 }
 
-export async function getAllSongs() {
+async function getAllSongs() {
 	const files = await listFilesInDir(songsDirName);
 	const songs: Song[] = await Promise.all(
 		files.map(async (path) => {
@@ -39,11 +35,10 @@ export async function getAllSongs() {
 	return songs.sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime());
 }
 
-export async function getSongInfo(p: string): Promise<Song> {
-	p = getSongPathWithoutPlaylist(p);
+async function getSongInfo(p: string): Promise<Song> {
 	const metadata = await parseFile(p);
 	const stats = await stat(p);
-	const id = getSongId(p);
+	const id = getSongIdFromFilename(p);
 	return {
 		id,
 		title: metadata.common.title,
@@ -62,18 +57,23 @@ export async function getSongInfo(p: string): Promise<Song> {
 }
 
 export async function getSongInfoFromId(id: string): Promise<Song> {
-	const songs = await getAllSongs();
-	const filename = getSongFileName(songs.filter((s) => s.id === id)[0]);
-	const filePath = path.join(songsDirName, filename);
-	return await getSongInfo(filePath);
+	const files = await listFilesInDir(songsDirName);
+	const song = files.find((f) => getSongIdFromFilename(f) === id);
+	if (!song) {
+		throw new Error('Song not found');
+	}
+	return await getSongInfo(song);
 }
 
-export async function extractCoverFromSong(
-	song: Song
-): Promise<{ format: string; type: string; description: string; data: Uint8Array }> {
-	const filePath = path.join(songsDir, getSongFileName(song));
-	const metadata = await parseFile(filePath);
-	return metadata.common.picture[0];
+export async function saveSongCover(songId: string): Promise<string> {
+	const coverImageName = songId + '.png';
+	const coverImagePath = path.join(songsDir, coverImageName);
+	const newCoverImagePath = path.join(coverDir, coverImageName);
+	try {
+		await rename(coverImagePath, newCoverImagePath);
+	} catch (_e){}
+
+	return '/'+path.join(songsDirName, coverDirName, coverImageName);
 }
 
 export async function refreshSongs() {
@@ -83,10 +83,19 @@ export async function refreshSongs() {
 	const newlyAddedSongsInFS = songsInFS.filter((s) => !databaseSongsIds.includes(s.id));
 
 	for (const song of newlyAddedSongsInFS) {
-		const coverImage = await extractCoverFromSong(song);
-		const coverImageName = song.id + '.png';
-		const coverImagePath = path.join(coverDir, coverImageName);
-		writeFile(coverImagePath, coverImage.data);
-		await addSong(song);
+		try {
+			await saveSongCover(song.id);
+			await addSong(song);
+		}catch(_e){}
 	}
+}
+
+export async function editMetadata(song: Song) {
+	// TODO: Fix this
+	// await nodeId3.update(
+	// 	{
+	// 		title: song.title,
+	// 	},
+	// 	path.join(songsDir, getSongFileName(song))
+	// );
 }

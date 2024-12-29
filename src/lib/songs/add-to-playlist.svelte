@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte';
-	import { playlists } from '$lib/stores';
+	import { playlists, toast } from '$lib/stores';
 	import type { Playlist, Song } from '$lib/types';
 	import { cn } from '$lib/utils';
 
@@ -12,7 +12,7 @@
 	let { open = $bindable(false), song }: Props = $props();
 
 	async function addSongToPlaylist(playlist: Playlist) {
-		const res = await fetch(`/api/toggleSongFromPlaylist`, {
+		const res = await fetch(`/api/playlist/toggleSong`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -27,6 +27,7 @@
 		const data = await res.json();
 		if (data.error) {
 			console.error(data.error);
+			toast.error(data.error);
 		} else {
 			if (data.isNowInPlaylist && song) {
 				$playlists = $playlists.map((playlist) => {
@@ -51,6 +52,8 @@
 					return playlist;
 				});
 			}
+
+			toast.success('Song added to playlist successfully');
 		}
 	}
 </script>

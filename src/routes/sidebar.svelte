@@ -3,8 +3,8 @@
 	import Input from '$lib/components/Input.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { Home, ListMusic, Plus, Disc3 } from 'lucide-svelte';
-	import { playlists, albums } from '$lib/stores';
-	import type { Album } from '$lib/types';
+	import { playlists, albums, toast } from '$lib/stores';
+	import { cn } from '$lib/utils';
 
 	let createPlaylistModalOpen = $state<boolean>(false);
 	let isCreatingPlaylist = $state<boolean>(false);
@@ -16,7 +16,7 @@
 		const formData = new FormData(form);
 		const title = formData.get('title') as string;
 		if (!title) return;
-		const res = await fetch('/api/createPlaylist', {
+		const res = await fetch('/api/playlist/create', {
 			method: 'POST',
 			body: JSON.stringify({ title }),
 			headers: { 'Content-Type': 'application/json' }
@@ -25,8 +25,10 @@
 			const data = await res.json();
 			$playlists = [...$playlists, data.playlist];
 			createPlaylistModalOpen = false;
+      toast.success('Playlist created successfully');
 		} else {
 			console.error('Failed to create playlist');
+      toast.error('Failed to create playlist');
 		}
 		isCreatingPlaylist = false;
 	}
@@ -34,7 +36,7 @@
 
 <Modal bind:open={createPlaylistModalOpen}>
 	<form class="flex flex-col gap-2 p-4" onsubmit={createPlaylist}>
-		<h2 class="text-lg font-bold">Create a new playlist</h2>
+		<h2 class="text-lg font-medium">Create a new playlist</h2>
 		<Input type="text" name="title" placeholder="Playlist title" />
 		<Button class="ml-auto" loading={isCreatingPlaylist} disabled={isCreatingPlaylist}
 			>Create</Button
@@ -54,7 +56,7 @@
   </div>
   <hr />
   <div class="flex flex-col overflow-y-auto">
-    <div class="mb-2 mt-4 flex flex-col gap-2">
+    <div class={cn("mb-2 mt-4 flex flex-col gap-2", $playlists.length === 0 && 'my-4')}>
       <div class="group flex shrink-0 flex-row items-center gap-2 px-4">
         <ListMusic class="size-5 shrink-0" />
         <h3 class="grow text-xl font-semibold">Playlists</h3>
@@ -65,17 +67,19 @@
           <Plus class="size-full" />
         </button>
       </div>
-      <div class="flex max-h-[400px] shrink-0 flex-col gap-2 overflow-y-auto p-2">
-        {#each $playlists as playlist}
-          <a
-            href="/playlist/{playlist.id}"
-            class="font-base flex flex-row items-center justify-between rounded-lg px-2 py-1 text-base ring-secondary transition-all hover:bg-secondary hover:ring-4"
-          >
-            <span>{playlist.title}</span>
-            <span class="text-xs text-muted">({playlist.songs.length})</span>
-          </a>
-        {/each}
-      </div>
+      {#if $playlists.length > 0}
+        <div class="flex max-h-[400px] shrink-0 flex-col gap-2 overflow-y-auto p-2">
+          {#each $playlists as playlist}
+            <a
+              href="/playlist/{playlist.id}"
+              class="font-base flex flex-row items-center justify-between rounded-lg px-2 py-1 text-base ring-secondary transition-all hover:bg-secondary hover:ring-4"
+            >
+              <span class="line-clamp-1">{playlist.title}</span>
+              <span class="text-xs text-muted">({playlist.songs.length})</span>
+            </a>
+          {/each}
+        </div>
+      {/if}
     </div>
     <hr />
 
@@ -90,7 +94,7 @@
             href=""
             class="font-base flex flex-row items-center justify-between rounded-lg px-2 py-1 text-base ring-secondary transition-all hover:bg-secondary hover:ring-4"
           >
-            <span>{album.title}</span>
+            <span class="line-clamp-1">{album.title}</span>
             <span class="text-xs text-muted">({album.songs.length})</span>
           </a>
         {/each}

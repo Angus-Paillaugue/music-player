@@ -24,7 +24,7 @@
 	<div class="absolute inset-0 -z-10 animate-pulse bg-secondary"></div>
 
 	<!-- Actual image -->
-	<img src={song.coverPath} class="size-full object-cover" alt="" />
+	<img src={song.coverPath} draggable="false" class="size-full object-cover" alt="" />
 
 	<!-- Playing indicator : moving audio lines -->
 	{#if isSelected}
@@ -39,19 +39,19 @@
 					transition:fade={{ duration: 300, delay: 0 }}
 				>
 					<div
-						class="w-[3px] rounded-full bg-primary"
+						class="w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.5s 0.5s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-primary"
+						class="w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.8s 0.8s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-primary"
+						class="w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 2s 1s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-primary"
+						class="w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.6s 0.6s ease-in-out infinite both;"
 					></div>
 				</div>
@@ -62,35 +62,35 @@
 					transition:fade={{ duration: 300, delay: 0 }}
 				>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.5s 0.5s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.8s 0.8s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 2s 1s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.6s 0.6s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.4s 0.4s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.7s 0.7s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.9s 0.9s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[10px] rounded-full bg-primary"
+						class="w-[10px] rounded-full bg-foreground"
 						style="animation: height-animation 1.3s 0.3s ease-in-out infinite both;"
 					></div>
 				</div>
