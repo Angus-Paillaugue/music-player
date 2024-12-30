@@ -8,6 +8,7 @@
 	import Toaster from '$lib/components/Toaster.svelte';
 
 	let { data, children } = $props();
+	let sidebarOpen = $state<boolean>(false);
 	$songs = data.songs;
 	$playlists = data.playlists;
 	$albums = data.albums;
@@ -18,14 +19,16 @@
 <Toaster />
 
 <div class="flex h-screen flex-col overflow-hidden">
-	<Nav />
+	<Nav bind:sidebarOpen />
 
 	<div class="flex w-full grow flex-row overflow-hidden">
-		<Sidebar />
-		<div class="h-full grow overflow-y-auto p-2">
-			{@render children?.()}
+		<Sidebar bind:open={sidebarOpen} />
+		<div class="flex flex-col grow relative">
+			<div class="h-full grow overflow-y-auto p-2">
+				{@render children?.()}
+			</div>
+			<Player />
 		</div>
 	</div>
 
-	<Player />
 </div>

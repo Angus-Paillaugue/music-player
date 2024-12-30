@@ -39,6 +39,7 @@
 		"music-metadata": "^10.6.4",
 		"mysql2": "^3.12.0",
 		"node-id3": "^0.2.6",
+		"puppeteer": "^23.11.1",
 		"tailwind-merge": "^2.5.5"
 	}
 }

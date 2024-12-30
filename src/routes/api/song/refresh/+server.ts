@@ -4,9 +4,8 @@ import { refreshSongs } from '$lib/songs';
 import { getAllSongs } from '$lib/db/song';
 
 export const POST: RequestHandler = async () => {
-	await refreshSongs();
-
 	try {
+		await refreshSongs();
 		const songs = await getAllSongs();
 		return json({ songs, success: true, message: 'Song refreshed successfully.' });
 	} catch (error) {

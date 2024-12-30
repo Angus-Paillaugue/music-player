@@ -9,7 +9,6 @@ export class Player {
 	private _currentTime = $state<number>(0);
 	private _percentage = $state<number>(0);
 	private _isPlaying = $state<boolean>(false);
-	private _songs: Song[] = [];
 
 	play() {
 		this._playerElement.play();

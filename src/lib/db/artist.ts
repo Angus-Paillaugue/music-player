@@ -1,6 +1,7 @@
 import type { Artist } from '$lib/types';
 import db from '.';
 import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
+import { getAllSongs } from './song';
 
 export async function getAllArtists() {
 	const query = 'SELECT * FROM artist';
@@ -24,4 +25,9 @@ export async function createArtist(artist: Artist): Promise<number> {
 		const [rows] = await db.execute<ResultSetHeader>(query, [artist.name]);
 		return rows.insertId;
 	}
+}
+
+export async function getArtistSongs(artist: Artist) {
+	const allSongs = await getAllSongs();
+	return allSongs.filter((song) => song.artist.id === artist.id);
 }

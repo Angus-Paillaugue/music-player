@@ -5,6 +5,7 @@
 	import Cover from '../Cover.svelte';
 	import { page } from '$app/state';
 	import { Trash2 } from 'lucide-svelte';
+	import Link from '$lib/components/Link.svelte';
 
 	interface Props {
 		song: Song;
@@ -17,7 +18,7 @@
 	function play(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		// Do not play the song if the user clicks on a button or the track is disabled or the click is not the left button
-		if(target.closest('button') || target.closest('.track')?.classList.contains('disabled') || e.button !== 0) return;
+		if(target.closest('button') || target.closest('a') || target.closest('.track')?.classList.contains('disabled') || e.button !== 0) return;
 		$currentlyPlayingSong = song;
 	}
 
@@ -68,7 +69,8 @@
 		</div>
 		<div class="flex flex-col text-start grow">
 			<h3 class="text-base font-medium">{song.title}</h3>
-			<p class="text-sm text-muted">{song.artist.name} - {formatTime(song.duration)}</p>
+			<p class="text-sm text-muted">
+				<Link href="/artist/{song.artist.id}">{song.artist.name}</Link> - {formatTime(song.duration)}</p>
 		</div>
 
 		{#if page.route.id === "/playlist/[id]"}
@@ -84,7 +86,7 @@
 	<div
 		onmouseup={play}
 		class={cn(
-			'text-text track flex flex-col gap-2 rounded-xl p-2 shrink-0',
+			'text-text track flex flex-col gap-2 rounded-xl p-2 shrink-0 cursor-pointer',
 			isSongSelected ? 'bg-secondary ring-2 ring-secondary' : ''
 		)}
 		data-track-id={song.id}
@@ -102,8 +104,8 @@
 
 		<!-- Details -->
 		<div class="flex flex-col gap-1">
-			<h3 class="text-base font-medium">{song.title}</h3>
-			<p class="text-sm text-muted">{song.artist.name}</p>
+			<h3 class="text-base font-medium line-clamp-2">{song.title}</h3>
+			<Link class="text-sm text-muted" href="/artist/{song.artist.id}"><p class="line-clamp-2">{song.artist.name}</p></Link>
 		</div>
 	</div>
 {/if}

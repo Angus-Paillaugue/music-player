@@ -61,7 +61,7 @@
     carouselElement.scrollTo({ left: 0, behavior: 'smooth' });
 
     carouselElement.addEventListener('mousedown', onDragStart);
-    carouselElement.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mousemove', onDragMove);
     document.addEventListener('mouseup', onDragEnd);
 
     return () => {

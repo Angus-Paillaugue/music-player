@@ -11,6 +11,10 @@
 	const GRID_SIZE = 2 * 3 * 3; // 2 rows, 3 columns, 3 pages
 </script>
 
+<svelte:head>
+	<title>Home</title>
+</svelte:head>
+
 <div class="mx-auto flex w-full max-w-screen-lg flex-col gap-8">
 	<!-- Quick picks section -->
 	<div class="flex flex-col gap-1">

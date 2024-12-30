@@ -1,24 +1,24 @@
 # TODO:
 
-- [ ] Make the sidebar responsive
-- [ ] Add loading states to actions
-- [ ] Add page loaders
-- [x] Toasts
-  - [x] Add them
-  - [ ] Make them pretty
-- [x] Song
-  - [x] Edit metadata
-  - [x] Add to playlist
-  - [x] Delete song
-  - [x] Download
-- [ ] Album
-  - [ ] Album page
-- [ ] Artist
-  - [ ] Gather artist data
-  - [ ] Artist page
-- [x] Playlist
-  - [x] Delete playlists
-  - [x] Download
-  - [x] Edit playlist name
-  - [x] Remove song from playlist
-  - [x] Fix next and previous not working as it should
+ - [ ] Make the sidebar responsive
+ - [ ] Add loading states to actions
+ - [ ] Add page loaders
+ - [x] Toasts
+   - [x] Add them
+   - [ ] Make them pretty
+ - [x] Song
+   - [x] Edit metadata
+   - [x] Add to playlist
+   - [x] Delete song
+   - [x] Download
+ - [ ] Album
+   - [ ] Album page
+ - [ ] Artist
+   - [ ] Gather artist data
+   - [x] Artist page
+ - [x] Playlist
+   - [x] Delete playlists
+   - [x] Download
+   - [x] Edit playlist name
+   - [x] Remove song from playlist
+   - [x] Fix next and previous not working as it should

@@ -5,6 +5,9 @@
 	import { Home, ListMusic, Plus, Disc3 } from 'lucide-svelte';
 	import { playlists, albums, toast } from '$lib/stores';
 	import { cn } from '$lib/utils';
+	import { afterNavigate } from '$app/navigation';
+
+  let { open = $bindable(false) } = $props();
 
 	let createPlaylistModalOpen = $state<boolean>(false);
 	let isCreatingPlaylist = $state<boolean>(false);
@@ -32,6 +35,10 @@
 		}
 		isCreatingPlaylist = false;
 	}
+
+  afterNavigate(() => {
+    open = false;
+  });
 </script>
 
 <Modal bind:open={createPlaylistModalOpen}>
@@ -44,7 +51,7 @@
 	</form>
 </Modal>
 
-<div class="flex h-full w-full max-w-[250px] shrink-0 flex-col border-r border-border">
+<div class={cn("flex h-full w-full max-sm:max-w-full max-lg:max-w-[75%] lg:max-w-[250px] bg-background/95 max-lg:backdrop-blur-md shrink-0 flex-col border-r border-border max-lg:fixed max-lg:top-16 max-lg:bottom-0 max-lg:left-0 transition-transform max-lg:z-30", open ? 'max-lg:translate-x-0' : 'max-lg:-translate-x-full')}>
   <div class="p-4">
     <a
       href="/"

@@ -4,10 +4,12 @@
 	import Input from '$lib/components/Input.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import { playlists, songs, toast, albums } from '$lib/stores';
-	import { RefreshCcw } from 'lucide-svelte';
+	import { Download, Menu, X } from 'lucide-svelte';
 	import { songFormat, type Album, type Playlist, type Song } from '$lib/types';
 	import Select from '$lib/components/Select.svelte';
+	import { scale } from 'svelte/transition';
 
+	let { sidebarOpen = $bindable(false) } = $props();
 	let isDownloadingSong = $state<boolean>(false);
 	let downloadSongModalOpen = $state<boolean>(false);
 	let downloadError = $state<string | null>(null);
@@ -95,22 +97,6 @@
 			playlistDownloadingResponseStreamData = null;
 		}
 	}
-
-	async function refreshSongs() {
-		const res = await fetch('/api/song/refresh', {
-			method: "POST"
-		});
-
-		if(!res.ok) {
-			console.error(res.statusText);
-			return;
-		}
-
-		const data = await res.json();
-		console.log(data);
-		$songs = data.songs;
-		toast.success('Songs refreshed successfully');
-	}
 </script>
 
 <Modal bind:open={downloadSongModalOpen}>
@@ -148,7 +134,20 @@
 	</form>
 </Modal>
 
-<div class="h-20 shrink-0 border-b border-border">
-	<button onclick={() => (downloadSongModalOpen = true)}>Download</button>
-	<button onclick={refreshSongs}><RefreshCcw class="size-5" /></button>
+<div class="h-16 shrink-0 border-b border-border flex flex-row p-4 items-center justify-between">
+	<Button variant="icon" onclick={() => (downloadSongModalOpen = true)}>
+		<Download class="size-full" />
+	</Button>
+	<Button class="lg:hidden" variant={["icon", "border"]} onclick={() => (sidebarOpen = !sidebarOpen)}>
+		{#if sidebarOpen}
+			<span class="size-full" in:scale>
+				<X class="size-full" />
+			</span>
+		{:else}
+			<span class="size-full" in:scale>
+				<Menu class="size-full" />
+			</span>
+		{/if}
+	</Button>
+	<div class="max-lg:hidden"></div>
 </div>

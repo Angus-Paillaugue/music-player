@@ -2,7 +2,7 @@
 	import { cn } from '$lib/utils';
 	import { LoaderCircle } from 'lucide-svelte';
 
-	type Variant = 'default' | 'icon' | 'secondary' | 'destructive';
+	type Variant = 'default' | 'icon' | 'secondary' | 'destructive' | 'border';
 
 	interface Props {
 		children?: () => any;
@@ -19,6 +19,7 @@
 		['default', 'bg-foreground text-background'],
 		['secondary', 'bg-secondary text-foreground border border-border'],
 		['destructive', 'bg-destructive text-destructive-foreground'],
+		['border', 'bg-transparent text-foreground border border-border'],
 	]);
 
 	const buttonVariants = variant instanceof Array ? variant : [variant];

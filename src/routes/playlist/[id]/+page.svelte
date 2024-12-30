@@ -56,6 +56,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{playlist.title}</title>
+</svelte:head>
+
 <Modal bind:open={deletePlaylistModalOpen}>
 	<h2 class="text-lg font-medium">Delete playlist</h2>
 	<p class="text-sm">Are you sure you want to delete this playlist?</p>

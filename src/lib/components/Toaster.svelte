@@ -1,17 +1,12 @@
 <script lang="ts">
   import { toasts, toast, type ToastType } from '$lib/stores';
-  import { fly, slide } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import { cn } from '$lib/utils';
   import { Info, TriangleAlert, CheckCheck, X } from 'lucide-svelte';
   import Button from './Button.svelte';
 	import { flip } from 'svelte/animate';
 
-  const baseClasses = 'flex grow flex-row items-center gap-2 transition-all p-4 border rounded-lg bg-secondary';
-  const variantClasses = new Map([
-    ['info', 'border-blue-600/50'],
-    ['error', 'border-destructive/50'],
-    ['success', 'border-emerald-600/50']
-  ]);
+  const baseClasses = 'flex grow flex-row items-center gap-2 w-full transition-all p-4 rounded-lg bg-secondary';
 
   const iconVariants = new Map([
     ['info', 'text-blue-600'],
@@ -34,15 +29,16 @@
 <div class="flex flex-col gap-2 fixed bottom-2 right-2 z-30 max-w-[400px]">
   {#each $toasts as t (t.id)}
     <div
-      class={cn(baseClasses, variantClasses.get(t.type))}
-      animate:flip
-      transition:fly={{ duration: 300, x: '100%' }}
+      role="alert"
+      class={baseClasses}
+      animate:flip={{ duration: 500 }}
+      transition:fly={{ duration: 250, x: '100%' }}
     >
       {@render icon(t.type)}
-      <span class="grow">{t.message}</span>
+      <span class="grow text-sm">{t.message}</span>
       <Button
         variant={["icon", "secondary"]}
-        class="shrink-0"
+        class="shrink-0 hover:bg-background rounded-full p-1 size-7"
         onclick={() => toast.remove(t.id)}
       >
         <X class="size-full" />

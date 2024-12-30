@@ -27,5 +27,6 @@ export interface Album {
 
 export interface Artist {
 	id: number;
-	name: string
+	name: string;
+	songs?: Song[];
 }

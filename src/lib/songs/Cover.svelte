@@ -29,69 +29,30 @@
 	<!-- Playing indicator : moving audio lines -->
 	{#if isSelected}
 		<div
-			class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm @container"
+			class="absolute inset-0 z-10 flex flex-col items-end justify-end bg-background/50 backdrop-blur-sm @container"
 			transition:fade={{ duration: 300, delay: 0 }}
 		>
 			{#if isPlaying}
 				<!-- For covers <= 100px wide -->
 				<div
-					class="flex size-full flex-row items-center justify-around gap-[2px] p-2 @[100px]:hidden"
+					class="flex size-full max-w-[100px] max-h-[100px] flex-row items-center justify-around gap-[2px] p-2"
 					transition:fade={{ duration: 300, delay: 0 }}
 				>
 					<div
-						class="w-[3px] rounded-full bg-foreground"
+						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.5s 0.5s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-foreground"
+						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.8s 0.8s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-foreground"
+						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 2s 1s ease-in-out infinite both;"
 					></div>
 					<div
-						class="w-[3px] rounded-full bg-foreground"
+						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
 						style="animation: height-animation 1.6s 0.6s ease-in-out infinite both;"
-					></div>
-				</div>
-
-				<!-- For covers > 100px wide -->
-				<div
-					class="hidden size-full flex-row items-center justify-around gap-[2px] p-12 @[100px]:flex"
-					transition:fade={{ duration: 300, delay: 0 }}
-				>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.5s 0.5s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.8s 0.8s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 2s 1s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.6s 0.6s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.4s 0.4s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.7s 0.7s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.9s 0.9s ease-in-out infinite both;"
-					></div>
-					<div
-						class="w-[10px] rounded-full bg-foreground"
-						style="animation: height-animation 1.3s 0.3s ease-in-out infinite both;"
 					></div>
 				</div>
 			{/if}
