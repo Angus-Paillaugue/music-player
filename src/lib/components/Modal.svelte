@@ -34,7 +34,7 @@
 	></div>
 
 	<div
-		class="fixed left-1/2 top-1/2 z-50 w-full max-w-screen-md -translate-x-1/2 -translate-y-1/2 p-2"
+		class="fixed left-1/2 top-1/2 z-50 max-h-svh w-full max-w-screen-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto p-2"
 		transition:fly={{ duration: 300, y: '100%' }}
 	>
 		<div class={cn('rounded-lg border bg-background p-4', className)} {...restProps}>

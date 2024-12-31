@@ -98,8 +98,8 @@
 		{#each new Array(numberOfPages) as _, pageNumber}
 			<button
 				class={cn(
-					'size-3 rounded-full transition-colors',
-					pageNumber === currentPage ? 'bg-foreground' : 'bg-muted'
+					'size-3 rounded-full transition-all',
+					pageNumber === currentPage ? 'scale-110 bg-foreground' : 'bg-muted'
 				)}
 				aria-label="Go to page {pageNumber}"
 				disabled={pageNumber === currentPage}

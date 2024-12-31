@@ -5,7 +5,7 @@
 - [ ] Add page loaders
 - [x] Toasts
   - [x] Add them
-  - [ ] Make them pretty
+  - [x] Make them pretty
 - [x] Song
   - [x] Edit metadata
   - [x] Add to playlist
@@ -22,3 +22,5 @@
   - [x] Edit playlist name
   - [x] Remove song from playlist
   - [x] Fix next and previous not working as it should
+- [x] Others
+  - [x] Songs search

@@ -13,7 +13,8 @@
 	let addSongToPlaylistModalOpen = $state<boolean>(false);
 	let editSongModalOpen = $state<boolean>(false);
 	let isEditingSong = $state<boolean>(false);
-	let updatedTrack = $derived(JSON.parse(JSON.stringify(track)));
+	let updatedTrack: typeof track = $derived(JSON.parse(JSON.stringify(track)));
+	let confirmSongDeletionModalOpen = $state<boolean>(false);
 
 	function onClick(e: MouseEvent) {
 		const target = e.target as HTMLElement;
@@ -52,6 +53,7 @@
 		}
 		isDeletingTrack = false;
 		contextMenuOpen = false;
+		confirmSongDeletionModalOpen = false;
 		toast.success('Song deleted successfully');
 	}
 
@@ -95,6 +97,23 @@
 	</form>
 </Modal>
 
+<Modal bind:open={confirmSongDeletionModalOpen}>
+	<h2 class="text-lg font-medium">Delete song</h2>
+	<p>Are you sure you want to delete this song?</p>
+	<div class="mt-4 flex flex-row items-center justify-between gap-4">
+		<Button
+			variant="border"
+			disabled={isDeletingTrack}
+			onclick={() => (confirmSongDeletionModalOpen = false)}
+		>
+			No, cancel
+		</Button>
+		<Button disabled={isDeletingTrack} loading={isDeletingTrack} onclick={deleteSong}>
+			Yes, delete
+		</Button>
+	</div>
+</Modal>
+
 <svelte:window oncontextmenu={onContextMenu} onclick={onClick} />
 
 {#if contextMenuOpen}
@@ -118,7 +137,9 @@
 			Add to playlist
 		</button>
 		<button
-			onclick={deleteSong}
+			onclick={() => {
+				confirmSongDeletionModalOpen = true;
+			}}
 			class="text-text flex w-full flex-row items-center gap-2 px-4 py-2 text-sm transition-colors hover:bg-destructive/50 hover:text-destructive-foreground"
 			disabled={isDeletingTrack}
 		>

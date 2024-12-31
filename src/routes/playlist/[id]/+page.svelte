@@ -119,7 +119,7 @@
 </Modal>
 
 <div class="mx-auto mt-4 flex w-full max-w-screen-lg flex-col gap-4">
-	<div class="flex flex-row items-center justify-between">
+	<div class="flex flex-row items-center justify-between px-4">
 		<h1 class="text-2xl font-bold">
 			{playlist.title}
 		</h1>

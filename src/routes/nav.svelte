@@ -103,7 +103,7 @@
 				}
 
 				downloadSongModalOpen = false;
-				$songs = data.song;
+				$songs.unshift(data.song);
 				toast.success('Song downloaded successfully');
 			}
 		} catch (e) {

@@ -39,7 +39,7 @@
 			<span class="grow text-sm">{t.message}</span>
 			<Button
 				variant={['icon', 'secondary']}
-				class="size-7 shrink-0 rounded-full p-1 hover:bg-background"
+				class="size-7 shrink-0 rounded-full bg-secondary p-1 hover:bg-background"
 				onclick={() => toast.remove(t.id)}
 			>
 				<X class="size-full" />

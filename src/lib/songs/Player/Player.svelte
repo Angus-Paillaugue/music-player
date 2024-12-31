@@ -217,7 +217,6 @@
 						const progressX = e.offsetX;
 						const progressPercentage = progressX / (e.currentTarget as HTMLDivElement).clientWidth;
 						trackTooltipTime = player.song.duration * progressPercentage;
-						console.log(trackTooltipTime);
 					}}
 					onmouseleave={() => {
 						trackTooltipTime = -1;

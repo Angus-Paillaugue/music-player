@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { currentlyPlayingSong, isPlayingSong, playlists, toast } from '$lib/stores';
 	import type { Song } from '$lib/types';
-	import { cn, formatTime } from '$lib/utils';
+	import { formatTime } from '$lib/utils';
 	import Cover from '../Cover.svelte';
 	import { page } from '$app/state';
 	import { Trash2 } from 'lucide-svelte';
 	import { Link } from '$lib/components/';
+	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	interface Props {
 		song: Song;
 		format?: 'list' | 'card';
 	}
 
-	let { song, format = 'list' }: Props = $props();
+	let { song, format = 'list', ...restProps }: Props & SvelteHTMLElements['div'] = $props();
 	let isSongSelected = $derived($currentlyPlayingSong?.id === song.id);
 
 	function play(e: MouseEvent) {
@@ -56,11 +57,10 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
-		class={cn(
-			'text-text track flex w-full shrink-0 cursor-pointer flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors',
-			isSongSelected ? 'bg-secondary ring-2 ring-secondary' : ''
-		)}
+		class="text-text track flex w-full shrink-0 cursor-pointer flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused="true"]:bg-secondary data-[focused="true"]:ring-2 data-[focused="true"]:ring-secondary"
 		data-track-id={song.id}
+		data-focused={isSongSelected}
+		{...restProps}
 	>
 		<!-- cover -->
 		<div class="relative size-12 shrink-0 overflow-hidden rounded-lg">
@@ -97,11 +97,10 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
-		class={cn(
-			'text-text track flex shrink-0 cursor-pointer flex-col gap-2 rounded-xl p-2',
-			isSongSelected ? 'bg-secondary ring-2 ring-secondary' : ''
-		)}
+		class="text-text track flex shrink-0 cursor-pointer flex-col gap-2 rounded-xl p-2 hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused="true"]:bg-secondary data-[focused="true"]:ring-2 data-[focused="true"]:ring-secondary"
 		data-track-id={song.id}
+		data-focused={isSongSelected}
+		{...restProps}
 	>
 		<!-- Cover -->
 		<div class="relative w-full overflow-hidden rounded-lg">
