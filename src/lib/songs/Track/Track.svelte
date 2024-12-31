@@ -57,7 +57,7 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
-		class="text-text track flex w-full shrink-0 cursor-pointer flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused="true"]:bg-secondary data-[focused="true"]:ring-2 data-[focused="true"]:ring-secondary"
+		class="text-text track flex w-full shrink-0 cursor-pointer flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused='true']:bg-secondary data-[focused='true']:ring-2 data-[focused='true']:ring-secondary"
 		data-track-id={song.id}
 		data-focused={isSongSelected}
 		{...restProps}
@@ -97,7 +97,7 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
-		class="text-text track flex shrink-0 cursor-pointer flex-col gap-2 rounded-xl p-2 hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused="true"]:bg-secondary data-[focused="true"]:ring-2 data-[focused="true"]:ring-secondary"
+		class="text-text track flex shrink-0 cursor-pointer flex-col gap-2 rounded-xl p-2 hover:bg-secondary hover:ring-2 hover:ring-secondary data-[focused='true']:bg-secondary data-[focused='true']:ring-2 data-[focused='true']:ring-secondary"
 		data-track-id={song.id}
 		data-focused={isSongSelected}
 		{...restProps}
