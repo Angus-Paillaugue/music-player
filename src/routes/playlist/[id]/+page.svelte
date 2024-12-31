@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Modal from '$lib/components/Modal.svelte';
+	import { Modal, Input, Button } from '$lib/components/';
 	import Track from '$lib/songs/Track/Track.svelte';
 	import { playlists, songsToPlay, toast } from '$lib/stores';
 	import type { Playlist } from '$lib/types';
@@ -11,9 +9,7 @@
 	let { data } = $props();
 
 	// Playlist cannot be null or undefined because an error would have been thrown on the server
-	let playlist = $state<Playlist>(
-		$playlists.find((p) => p.id === data.id)
-	);
+	let playlist = $state<Playlist>($playlists.find((p) => p.id === data.id) as Playlist);
 	let ediPlaylistModalOpen = $state<boolean>(false);
 	let isSavingPlaylist = $state<boolean>(false);
 	let deletePlaylistModalOpen = $state<boolean>(false);
@@ -31,9 +27,9 @@
 		const res = await fetch(`/api/playlist/save`, {
 			method: 'PUT',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({playlist: editedPlaylist}),
+			body: JSON.stringify({ playlist: editedPlaylist })
 		});
 
 		if (res.ok) {
@@ -44,7 +40,7 @@
 				$playlists[index] = playlist;
 			}
 			toast.success('Playlist saved successfully');
-		}else {
+		} else {
 			toast.error('Failed to save playlist');
 		}
 
@@ -52,7 +48,7 @@
 	}
 
 	$effect(() => {
-		playlist = $playlists.find((p) => p.id === data.id) || null;
+		playlist = $playlists.find((p) => p.id === data.id) as Playlist;
 	});
 </script>
 
@@ -66,7 +62,7 @@
 	<form
 		action="?/deletePlaylist"
 		method="POST"
-		class="flex flex-row justify-between mt-2"
+		class="mt-2 flex flex-row justify-between"
 		use:enhance={() => {
 			isDeletingPlaylist = true;
 			return async ({ update }) => {
@@ -78,7 +74,10 @@
 		<Button
 			type="button"
 			variant="secondary"
-			onclick={() => {deletePlaylistModalOpen = false; ediPlaylistModalOpen = true;}}
+			onclick={() => {
+				deletePlaylistModalOpen = false;
+				ediPlaylistModalOpen = true;
+			}}
 		>
 			Cancel
 		</Button>
@@ -96,13 +95,8 @@
 <Modal bind:open={ediPlaylistModalOpen}>
 	<h2 class="text-xl font-medium">Edit playlist</h2>
 
-	<form
-		method="POST"
-		class="flex flex-col gap-2"
-		onsubmit={updatePlaylist}
-	>
-
-		<div class="flex flex-col gap-1 mt-4">
+	<form method="POST" class="flex flex-col gap-2" onsubmit={updatePlaylist}>
+		<div class="mt-4 flex flex-col gap-1">
 			<label for="playlistTitle">Title</label>
 			<Input bind:value={editedPlaylist.title} name="playlistTitle" />
 		</div>
@@ -111,33 +105,26 @@
 			<Button
 				type="button"
 				variant="destructive"
-				onclick={() => {ediPlaylistModalOpen = false; deletePlaylistModalOpen = true;}}
+				onclick={() => {
+					ediPlaylistModalOpen = false;
+					deletePlaylistModalOpen = true;
+				}}
 			>
 				<Trash2 class="size-4" />
 				Delete
 			</Button>
-			<Button
-				type="submit"
-				disabled={isSavingPlaylist}
-				loading={isSavingPlaylist}
-			>
-				Save
-			</Button>
+			<Button type="submit" disabled={isSavingPlaylist} loading={isSavingPlaylist}>Save</Button>
 		</div>
-
 	</form>
-
 </Modal>
 
-<div class="mx-auto flex w-full max-w-screen-lg flex-col gap-4 mt-4">
-	<div
-		class="flex flex-row items-center justify-between"
-	>
+<div class="mx-auto mt-4 flex w-full max-w-screen-lg flex-col gap-4">
+	<div class="flex flex-row items-center justify-between">
 		<h1 class="text-2xl font-bold">
 			{playlist.title}
 		</h1>
 
-		<Button class="size-7 p-1.5" onclick={() => ediPlaylistModalOpen = true}>
+		<Button class="size-7 p-1.5" onclick={() => (ediPlaylistModalOpen = true)}>
 			<PenIcon class="size-full" />
 		</Button>
 	</div>

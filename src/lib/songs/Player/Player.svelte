@@ -2,7 +2,15 @@
 	import { onMount } from 'svelte';
 	import { Player } from './player.svelte';
 	import type { Song } from '$lib/types';
-	import { Pause, Play, SkipBack, SkipForward, EllipsisVertical, ChevronDown } from 'lucide-svelte';
+	import {
+		Pause,
+		Play,
+		SkipBack,
+		SkipForward,
+		EllipsisVertical,
+		ChevronDown,
+		Plus
+	} from 'lucide-svelte';
 	import { fly, scale } from 'svelte/transition';
 	import Title from './title.svelte';
 	import { cn, formatTime } from '$lib/utils';
@@ -11,7 +19,7 @@
 	import Track from '../Track/Track.svelte';
 	import AddToPlaylist from '../add-to-playlist.svelte';
 	import { afterNavigate } from '$app/navigation';
-	import Link from '$lib/components/Link.svelte';
+	import { Link, Dropdown } from '$lib/components/';
 
 	let player = $state<Player>();
 	let isPlayerFullScreen = $state<boolean>(false);
@@ -98,10 +106,7 @@
 
 <!-- Song detail on full screen -->
 {#if isPlayerFullScreen && $currentlyPlayingSong && player?.song}
-	<div
-		class="absolute inset-0 z-20 bg-background"
-		transition:fly={{ y: '100%', duration: 300 }}
-	>
+	<div class="absolute inset-0 z-20 bg-background" transition:fly={{ y: '100%', duration: 300 }}>
 		<div
 			class="no-scrollbar mx-auto flex h-full w-full max-w-screen-xl flex-col gap-4 overflow-y-auto p-4 md:p-8 md:pb-[5.5rem] lg:grid lg:grid-cols-2"
 		>
@@ -178,9 +183,7 @@
 			</div>
 
 			<!-- Songs list -->
-			<div
-				class="max-md:max-h-1/2 no-scrollbar flex shrink-0 flex-col overflow-y-auto max-md:mt-8"
-			>
+			<div class="max-md:max-h-1/2 no-scrollbar flex shrink-0 flex-col overflow-y-auto max-md:mt-8">
 				<h2 class="text-lg font-medium">Up next</h2>
 				{#each $songsToPlay as song}
 					<Track {song} />
@@ -192,39 +195,43 @@
 
 <!-- Main player -->
 {#if $currentlyPlayingSong && player?.song}
-	<div class={cn("w-full shrink-0 flex flex-row items-center justify-center bg-background transition-transform duration-300", isPlayerFullScreen ? 'max-md:translate-y-full' : '')} transition:fly={{ y: '100%', duration: 300 }}>
-		<div
-			class='z-20 w-full shrink-0 p-2 max-w-screen-xl mx-auto bg-background'
-		>
+	<div
+		class={cn(
+			'flex w-full shrink-0 flex-row items-center justify-center bg-background transition-transform duration-300',
+			isPlayerFullScreen ? 'max-md:translate-y-full' : ''
+		)}
+		transition:fly={{ y: '100%', duration: 300 }}
+	>
+		<div class="z-20 mx-auto w-full max-w-screen-xl shrink-0 bg-background p-2">
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div
-				class='text-text flex h-[4.5rem] w-full flex-col bg-secondary rounded-lg'
-			>
+			<div class="text-text flex h-[4.5rem] w-full flex-col rounded-lg bg-secondary">
 				<!-- Progress bar -->
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div
-					class="bg-accent h-2 w-full transition-colors hover:bg-background/50 relative rounded-t-lg"
+					class="bg-accent relative h-2 w-full rounded-t-lg transition-colors hover:bg-background/50"
 					onclick={onProgressBarClick}
 					onmousemove={(e) => {
 						if (!player?.song) return;
 						const progressX = e.offsetX;
 						const progressPercentage = progressX / (e.currentTarget as HTMLDivElement).clientWidth;
 						trackTooltipTime = player.song.duration * progressPercentage;
-						console.log(trackTooltipTime)
+						console.log(trackTooltipTime);
 					}}
-
 					onmouseleave={() => {
 						trackTooltipTime = -1;
 					}}
 				>
 					{#if trackTooltipTime >= 0}
-						<div class="absolute bottom-full px-2 py-1 z-10 bg-background font-mono border border-border mb-1 tex-xs text-text rounded-md -translate-x-1/2" style="left: {trackTooltipTime/player.song.duration * 100}%">
+						<div
+							class="tex-xs text-text absolute bottom-full z-10 mb-1 -translate-x-1/2 rounded-md border border-border bg-background px-2 py-1 font-mono"
+							style="left: {(trackTooltipTime / player.song.duration) * 100}%"
+						>
 							{formatTime(trackTooltipTime)}
 						</div>
 					{/if}
-					<div class="w-full rounded-t-lg overflow-hidden h-full">
+					<div class="h-full w-full overflow-hidden rounded-t-lg">
 						<div
 							class="h-full bg-foreground transition-[width] duration-100 ease-linear"
 							style="width: {player.percentage}%"
@@ -275,14 +282,16 @@
 						class="md: flex w-1/2 flex-row items-center justify-start gap-4 text-start max-md:grow"
 						onclick={(e) => {
 							const target = e.target as HTMLElement;
-							if(target.closest('a')) return;
+							if (target.closest('a')) return;
 							isPlayerFullScreen = !isPlayerFullScreen;
 						}}
 					>
 						{#key player.song}
 							<Cover song={player.song} class="aspect-square h-12 w-auto rounded-md object-cover" />
 						{/key}
-						<div class="flex flex-col items-start justify-between gap-1 text-start max-md:grow md:text-center">
+						<div
+							class="flex flex-col items-start justify-between gap-1 text-start max-md:grow md:text-center"
+						>
 							<Title title={player.song.title ?? ''} />
 							<Link class="text-muted" href="/artist/{player.song.artist.id}">
 								<p class="text-sm leading-6">{player.song.artist.name}</p>
@@ -290,15 +299,27 @@
 						</div>
 					</button>
 
-					<!-- Toggle full screen -->
-					<button
-						onclick={() => {
-							addCurrentSongToPlaylistModal = true;
-						}}
-						class="size-8 shrink-0 rounded-full p-2 transition-all hover:bg-background max-md:hidden"
-					>
-						<EllipsisVertical class="size-full" />
-					</button>
+					<Dropdown position="top" align="end">
+						<Dropdown.Trigger
+							variant="none"
+							class="size-8 shrink-0 rounded-full p-2 transition-all hover:bg-background max-md:hidden"
+						>
+							<EllipsisVertical class="size-full" />
+						</Dropdown.Trigger>
+						{#snippet items()}
+							<Dropdown.Item
+								href="/"
+								class=""
+								name="Add to playlist"
+								onclick={() => {
+									addCurrentSongToPlaylistModal = true;
+								}}
+							>
+								<Plus class="size-4" />
+								Add to playlist
+							</Dropdown.Item>
+						{/snippet}
+					</Dropdown>
 				</div>
 			</div>
 		</div>

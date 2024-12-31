@@ -4,7 +4,7 @@ import { parseFile } from 'music-metadata';
 import path from 'path';
 import { searchForWorkspaceRoot } from 'vite';
 import { addSong, getAllSongs as getAllSongsFomDatabase, getSongFileName } from '$lib/db/song';
-import nodeId3 from 'node-id3';
+// import nodeId3 from 'node-id3';
 
 const listFilesInDir = async (dir: string) => {
 	return (await readdir(path.join(__dirname, dir), { withFileTypes: true }))
@@ -71,9 +71,10 @@ export async function saveSongCover(songId: string): Promise<string> {
 	const newCoverImagePath = path.join(coverDir, coverImageName);
 	try {
 		await rename(coverImagePath, newCoverImagePath);
-	} catch (_e){}
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+	} catch (_e) {}
 
-	return '/'+path.join(songsDirName, coverDirName, coverImageName);
+	return '/' + path.join(songsDirName, coverDirName, coverImageName);
 }
 
 export async function refreshSongs() {
@@ -86,7 +87,8 @@ export async function refreshSongs() {
 		try {
 			await saveSongCover(song.id);
 			await addSong(song);
-		}catch(_e){}
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+		} catch (_e) {}
 	}
 }
 

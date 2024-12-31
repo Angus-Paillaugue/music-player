@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 	import { TriangleAlert } from 'lucide-svelte';
-	interface Props {
-		children?: () => any;
-		class?: string;
-	}
+	import type { SvelteHTMLElements } from 'svelte/elements';
 
-	let { children, class: className, ...restProps }: Props = $props();
+	let { children, class: className, ...restProps }: SvelteHTMLElements['div'] = $props();
 </script>
 
 <div

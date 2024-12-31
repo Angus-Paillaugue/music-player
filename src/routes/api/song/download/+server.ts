@@ -11,7 +11,6 @@ const completeDir = './songs';
 const incompleteDir = join(completeDir, incompleteDirName);
 
 async function downloadSong(songId: string, format: Song['mediaType']) {
-
 	const command = `yt-dlp -x --audio-format ${format} --audio-quality 320k \
       --write-thumbnail --embed-thumbnail --convert-thumbnails png --embed-metadata --no-playlist \
       -o "${incompleteDir}/%(id)s.%(ext)s" \
@@ -52,10 +51,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	try {
 		const songExists = await getSongInfoFromId(songId);
-		return json(
-			{ message: 'Song already exists.', song: songExists },
-			{ status: 400 }
-		);
+		return json({ message: 'Song already exists.', song: songExists }, { status: 400 });
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
 	} catch (_e) {}
 
 	try {
@@ -68,9 +65,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({ song, success: true, message: 'Song downloaded successfully.' });
 	} catch (error) {
 		console.error(error);
-		return json(
-			{ message: error instanceof Error ? error.message : error },
-			{ status: 500 }
-		);
+		return json({ message: error instanceof Error ? error.message : error }, { status: 500 });
 	}
 };

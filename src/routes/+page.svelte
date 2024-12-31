@@ -18,13 +18,13 @@
 <div class="mx-auto flex w-full max-w-screen-lg flex-col gap-8">
 	<!-- Quick picks section -->
 	<div class="flex flex-col gap-1">
-		<h2 class="text-xl font-medium px-2">Quick picks</h2>
+		<h2 class="px-2 text-xl font-medium">Quick picks</h2>
 		<Grid songs={$songs.slice(0, GRID_SIZE)} />
 	</div>
 
 	<!-- All songs section -->
 	<div class="flex flex-col gap-1">
-		<h2 class="text-xl font-medium px-2">All songs</h2>
+		<h2 class="px-2 text-xl font-medium">All songs</h2>
 		<List songs={$songs} />
 	</div>
 </div>

@@ -3,13 +3,6 @@ import db from '.';
 import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
 import { normalizeSongPaths } from './song';
 
-export async function getAlbums() {
-	const query = 'SELECT * FROM album';
-	const [albums] = await db.execute<RowDataPacket[]>(query);
-
-	return albums as Album[];
-}
-
 export async function getAllAlbums(): Promise<Album[]> {
 	const query = `
 		SELECT a.*,

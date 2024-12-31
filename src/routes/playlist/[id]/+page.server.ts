@@ -17,7 +17,7 @@ export const actions: Actions = {
 	deletePlaylist: async ({ params }) => {
 		try {
 			const playlistId = params.id;
-			if(!playlistId) {
+			if (!playlistId) {
 				return fail(400, { message: 'Invalid playlist ID' });
 			}
 			await deletePlaylist(playlistId);

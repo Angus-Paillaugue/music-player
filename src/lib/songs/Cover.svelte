@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Song } from '$lib/types';
 	import { cn } from '$lib/utils';
+	import type { SvelteHTMLElements } from 'svelte/elements';
 	import { fade } from 'svelte/transition';
 
 	interface Props {
 		song: Song;
 		isPlaying?: boolean;
 		isSelected?: boolean;
-		class?: string;
 	}
 
 	let {
@@ -16,7 +16,7 @@
 		isSelected = false,
 		class: className,
 		...restProps
-	}: Props = $props();
+	}: Props & SvelteHTMLElements['div'] = $props();
 </script>
 
 <div class={cn('relative size-full overflow-hidden', className)} {...restProps}>
@@ -35,23 +35,23 @@
 			{#if isPlaying}
 				<!-- For covers <= 100px wide -->
 				<div
-					class="flex size-full max-w-[100px] max-h-[100px] flex-row items-center justify-around gap-[2px] p-2"
+					class="flex size-full max-h-[100px] max-w-[100px] flex-row items-center justify-around gap-[2px] p-2"
 					transition:fade={{ duration: 300, delay: 0 }}
 				>
 					<div
-						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
+						class="w-[3px] rounded-full bg-foreground @[100px]:w-[10px]"
 						style="animation: height-animation 1.5s 0.5s ease-in-out infinite both;"
 					></div>
 					<div
-						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
+						class="w-[3px] rounded-full bg-foreground @[100px]:w-[10px]"
 						style="animation: height-animation 1.8s 0.8s ease-in-out infinite both;"
 					></div>
 					<div
-						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
+						class="w-[3px] rounded-full bg-foreground @[100px]:w-[10px]"
 						style="animation: height-animation 2s 1s ease-in-out infinite both;"
 					></div>
 					<div
-						class="@[100px]:w-[10px] w-[3px] rounded-full bg-foreground"
+						class="w-[3px] rounded-full bg-foreground @[100px]:w-[10px]"
 						style="animation: height-animation 1.6s 0.6s ease-in-out infinite both;"
 					></div>
 				</div>

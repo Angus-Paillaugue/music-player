@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal.svelte';
+	import { Modal } from '$lib/components/';
 	import { playlists, toast } from '$lib/stores';
 	import type { Playlist, Song } from '$lib/types';
 	import { cn } from '$lib/utils';

@@ -3,7 +3,7 @@ import db from '.';
 import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
 import { getAllSongs } from './song';
 
-export async function getAllArtists() {
+export async function getAllArtists(): Promise<Artist[]> {
 	const query = 'SELECT * FROM artist';
 	const [artists] = await db.execute<RowDataPacket[]>(query);
 
@@ -27,7 +27,7 @@ export async function createArtist(artist: Artist): Promise<number> {
 	}
 }
 
-export async function getArtistSongs(artist: Artist) {
+export async function getArtistSongs(artist: Artist): Promise<Artist['songs']> {
 	const allSongs = await getAllSongs();
-	return allSongs.filter((song) => song.artist.id === artist.id);
+	return allSongs.filter((song) => song.artist.id === artist.id) as Artist['songs'];
 }

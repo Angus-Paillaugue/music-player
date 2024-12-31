@@ -128,6 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
 								song.coverPath = songCoverPath;
 								await addSong(song);
 								await addSongToPlaylist(song.id, playlistId);
+								// eslint-disable-next-line @typescript-eslint/no-unused-vars
 							} catch (_e) {
 								controller.enqueue(
 									JSON.stringify({
@@ -140,6 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
 							// Move cover image to cover directory
 							try {
 								await rename(filePath, join(songsDirName, coverDirName, file));
+								// eslint-disable-next-line @typescript-eslint/no-unused-vars
 							} catch (_e) {
 								controller.enqueue(
 									JSON.stringify({
@@ -156,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					const playlists = await getAllPlaylists();
 					const songs = await getAllSongs();
 					const albums = await getAllAlbums();
-					controller.enqueue(JSON.stringify({ event: 'end', data: { playlists, songs, albums} }));
+					controller.enqueue(JSON.stringify({ event: 'end', data: { playlists, songs, albums } }));
 					controller.close();
 					streamClosed = true;
 				});

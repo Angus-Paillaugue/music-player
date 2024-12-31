@@ -1,7 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-	import Input from '$lib/components/Input.svelte';
-	import Modal from '$lib/components/Modal.svelte';
+	import { Button, Modal, Input } from '$lib/components/';
 	import AddToPlaylist from '$lib/songs/add-to-playlist.svelte';
 	import { currentlyPlayingSong, songs, toast } from '$lib/stores';
 	import type { Song } from '$lib/types';
@@ -36,10 +34,10 @@
 	}
 
 	async function deleteSong() {
-		if(!track) return;
+		if (!track) return;
 		isDeletingTrack = true;
 		const res = await fetch(`/api/song/${track.id}/delete`, {
-			method: 'DELETE',
+			method: 'DELETE'
 		});
 
 		if (!res.ok) {
@@ -49,7 +47,7 @@
 			return;
 		}
 		$songs = $songs.filter((song) => track && song.id !== track.id);
-		if($currentlyPlayingSong?.id === track.id) {
+		if ($currentlyPlayingSong?.id === track.id) {
 			$currentlyPlayingSong = null;
 		}
 		isDeletingTrack = false;
@@ -59,18 +57,18 @@
 
 	async function editSong(e: Event) {
 		e.preventDefault();
-		if(!track) return;
+		if (!track) return;
 		isEditingSong = true;
 		const res = await fetch(`/api/song/${track.id}/edit`, {
-			body: JSON.stringify({updatedTrack}),
-			method: 'PUT',
+			body: JSON.stringify({ updatedTrack }),
+			method: 'PUT'
 		});
 
 		if (!res.ok) {
 			console.error('Failed to edit song');
 			toast.error('Failed to edit song');
 			return;
-		}else {
+		} else {
 			const index = $songs.findIndex((song) => song.id === updatedTrack.id);
 			$songs[index] = updatedTrack;
 			toast.success('Song edited successfully');
@@ -93,7 +91,7 @@
 			<Input id="editSongTitle" bind:value={updatedTrack.title} />
 		</div>
 
-		<Button loading={isEditingSong} disabled={isEditingSong} >Save</Button>
+		<Button loading={isEditingSong} disabled={isEditingSong}>Save</Button>
 	</form>
 </Modal>
 
@@ -106,7 +104,7 @@
 		transition:slide={{ duration: 300, axis: 'y' }}
 	>
 		<button
-		onclick={() => (editSongModalOpen = true)}
+			onclick={() => (editSongModalOpen = true)}
 			class="text-text flex w-full flex-row items-center gap-2 border-b border-border px-4 py-2 text-sm transition-colors hover:bg-secondary"
 		>
 			<PenIcon class="size-4" />
@@ -127,7 +125,7 @@
 			{#if isDeletingTrack}
 				<LoaderCircle class="size-4 animate-spin" />
 			{:else}
-			<Trash2 class="size-4" />
+				<Trash2 class="size-4" />
 			{/if}
 			Delete song
 		</button>

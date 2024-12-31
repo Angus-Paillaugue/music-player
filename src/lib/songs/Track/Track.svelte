@@ -5,7 +5,7 @@
 	import Cover from '../Cover.svelte';
 	import { page } from '$app/state';
 	import { Trash2 } from 'lucide-svelte';
-	import Link from '$lib/components/Link.svelte';
+	import { Link } from '$lib/components/';
 
 	interface Props {
 		song: Song;
@@ -18,7 +18,13 @@
 	function play(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		// Do not play the song if the user clicks on a button or the track is disabled or the click is not the left button
-		if(target.closest('button') || target.closest('a') || target.closest('.track')?.classList.contains('disabled') || e.button !== 0) return;
+		if (
+			target.closest('button') ||
+			target.closest('a') ||
+			target.closest('.track')?.classList.contains('disabled') ||
+			e.button !== 0
+		)
+			return;
 		$currentlyPlayingSong = song;
 	}
 
@@ -40,25 +46,24 @@
 			$playlists[index].songs = $playlists[index].songs.filter((s) => s.id !== song.id);
 			const data = await res.json();
 			toast.success(data.message);
-		}else {
+		} else {
 			toast.error('Failed to remove song from playlist');
 		}
 	}
 </script>
 
 {#if format === 'list'}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
 		class={cn(
-			'text-text track flex w-full flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors cursor-pointer shrink-0',
+			'text-text track flex w-full shrink-0 cursor-pointer flex-row items-center justify-start gap-4 overflow-hidden rounded-lg p-2 transition-colors',
 			isSongSelected ? 'bg-secondary ring-2 ring-secondary' : ''
 		)}
 		data-track-id={song.id}
 	>
 		<!-- cover -->
-		<div class="relative size-12 overflow-hidden rounded-lg shrink-0">
+		<div class="relative size-12 shrink-0 overflow-hidden rounded-lg">
 			<div class="absolute inset-0 -z-10 size-full animate-pulse bg-secondary"></div>
 			<Cover
 				{song}
@@ -67,26 +72,33 @@
 				class="size-full object-cover"
 			/>
 		</div>
-		<div class="flex flex-col text-start grow">
+		<div class="flex grow flex-col text-start">
 			<h3 class="text-base font-medium">{song.title}</h3>
 			<p class="text-sm text-muted">
-				<Link href="/artist/{song.artist.id}">{song.artist.name}</Link> - {formatTime(song.duration)}</p>
+				<Link href="/artist/{song.artist.id}">{song.artist.name}</Link> - {formatTime(
+					song.duration
+				)}
+			</p>
 		</div>
 
-		{#if page.route.id === "/playlist/[id]"}
+		{#if page.route.id === '/playlist/[id]'}
 			<!-- Is in a playlist page -->
-			<button class="p-2 hover:bg-destructive rounded-lg transition-colors group" onclick={removeSongFromPlaylist}>
-				<Trash2 class="size-5 text-muted group-hover:text-destructive-foreground transition-colors" />
+			<button
+				class="group rounded-lg p-2 transition-colors hover:bg-destructive"
+				onclick={removeSongFromPlaylist}
+			>
+				<Trash2
+					class="size-5 text-muted transition-colors group-hover:text-destructive-foreground"
+				/>
 			</button>
 		{/if}
 	</div>
 {:else}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		onmouseup={play}
 		class={cn(
-			'text-text track flex flex-col gap-2 rounded-xl p-2 shrink-0 cursor-pointer',
+			'text-text track flex shrink-0 cursor-pointer flex-col gap-2 rounded-xl p-2',
 			isSongSelected ? 'bg-secondary ring-2 ring-secondary' : ''
 		)}
 		data-track-id={song.id}
@@ -104,8 +116,10 @@
 
 		<!-- Details -->
 		<div class="flex flex-col gap-1">
-			<h3 class="text-base font-medium line-clamp-2">{song.title}</h3>
-			<Link class="text-sm text-muted" href="/artist/{song.artist.id}"><p class="line-clamp-2">{song.artist.name}</p></Link>
+			<h3 class="line-clamp-2 text-base font-medium">{song.title}</h3>
+			<Link class="text-sm text-muted" href="/artist/{song.artist.id}"
+				><p class="line-clamp-2">{song.artist.name}</p></Link
+			>
 		</div>
 	</div>
 {/if}

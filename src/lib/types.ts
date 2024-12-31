@@ -7,7 +7,7 @@ export interface Song {
 	duration: number;
 	album?: Album;
 	year: number;
-	mediaType: typeof songFormat[number];
+	mediaType: (typeof songFormat)[number];
 	addedAt: Date;
 	filePath: string;
 	coverPath: string;

@@ -12,10 +12,10 @@ export const load = (async ({ params }) => {
 		}
 
 		const artistsSongs = await getArtistSongs(artist);
-		artist.songs = artistsSongs;
+		artist.songs = artistsSongs || [];
 
 		return { artist };
-	} catch(e) {
-		return error(500, e instanceof Error ? e.message : e as string);
+	} catch (e) {
+		return error(500, e instanceof Error ? e.message : (e as string));
 	}
 }) satisfies PageServerLoad;

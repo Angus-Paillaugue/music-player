@@ -7,7 +7,7 @@ import { createArtist } from './artist';
 import { createAlbum } from './album';
 import { unlink } from 'fs/promises';
 
-export function getSongFileName(song: Song) {
+export function getSongFileName(song: Song): string {
 	return song.id + '.' + song.mediaType;
 }
 
@@ -21,7 +21,7 @@ export async function getSong(song: Song) {
 	return await getSongFromId(song.id);
 }
 
-export async function getSongFromId(id: Song['id']) {
+export async function getSongFromId(id: Song['id']): Promise<Song> {
 	const query = `
 		SELECT
 			s.id,
@@ -41,7 +41,7 @@ export async function getSongFromId(id: Song['id']) {
 	return normalizeSongPaths(rows[0] as Song);
 }
 
-export async function getAllSongs() {
+export async function getAllSongs(): Promise<Song[]> {
 	const query = `
 		SELECT
 			s.id,
@@ -60,7 +60,7 @@ export async function getAllSongs() {
 	return (songs as Song[]).map(normalizeSongPaths);
 }
 
-export async function addSong(song: Song) {
+export async function addSong(song: Song): Promise<Song> {
 	let albumId: null | number = null;
 	if (song.album?.title) {
 		albumId = await createAlbum(song.album);
@@ -82,14 +82,14 @@ export async function addSong(song: Song) {
 	return song;
 }
 
-export async function deleteSong(song: Song) {
+export async function deleteSong(song: Song): Promise<void> {
 	const query = 'DELETE FROM song WHERE id = ?';
 	await db.execute(query, [song.id]);
 	await unlink(path.join(songsDirName, getSongFileName(song)));
 	await unlink(path.join(songsDirName, coverDirName, song.id + '.png'));
 }
 
-export async function updateSong(song: Song) {
+export async function updateSong(song: Song): Promise<void> {
 	const query = `
 		UPDATE song
 		SET title = ?, duration = ?, year = ?, mediaType = ?
