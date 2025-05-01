@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal.svelte';
-	import { playlists } from '$lib/stores';
-	import type { Song } from '$lib/types';
+	import { Modal } from '$lib/components/';
+	import { playlists, toast } from '$lib/stores';
+	import type { Playlist, Song } from '$lib/types';
 	import { cn } from '$lib/utils';
 
 	interface Props {
@@ -11,13 +11,13 @@
 
 	let { open = $bindable(false), song }: Props = $props();
 
-	async function addSongToPlaylist(playlistName: string) {
-		const res = await fetch(`/api/toggleSongFromPlaylist`, {
+	async function addSongToPlaylist(playlist: Playlist) {
+		const res = await fetch(`/api/playlist/toggleSong`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ song: song, playlistName })
+			body: JSON.stringify({ song: song, playlist })
 		});
 
 		if (res.ok) {
@@ -27,10 +27,11 @@
 		const data = await res.json();
 		if (data.error) {
 			console.error(data.error);
+			toast.error(data.error);
 		} else {
 			if (data.isNowInPlaylist && song) {
 				$playlists = $playlists.map((playlist) => {
-					if (playlist.name === playlistName) {
+					if (playlist.id === playlist.id) {
 						return {
 							...playlist,
 							songs: [...playlist.songs.filter((s) => s !== null), song].filter(
@@ -42,7 +43,7 @@
 				});
 			} else {
 				$playlists = $playlists.map((playlist) => {
-					if (playlist.name === playlistName) {
+					if (playlist.id === playlist.id) {
 						return {
 							...playlist,
 							songs: playlist.songs.filter((s) => s !== null && song && s.id !== song.id)
@@ -51,6 +52,8 @@
 					return playlist;
 				});
 			}
+
+			toast.success('Song added to playlist successfully');
 		}
 	}
 </script>
@@ -65,9 +68,9 @@
 						'flex flex-row items-center gap-2 rounded-lg px-2 py-1 transition-all',
 						song && playlist.songs.map((s) => s.id).includes(song.id) ? 'bg-secondary' : ''
 					)}
-					onclick={() => addSongToPlaylist(playlist.name)}
+					onclick={() => addSongToPlaylist(playlist)}
 				>
-					<span class="text-base font-medium">{playlist.name}</span>
+					<span class="text-base font-medium">{playlist.title}</span>
 					<span class="text-sm text-muted">({playlist.songs.length})</span>
 				</button>
 			{/each}

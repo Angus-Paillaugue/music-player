@@ -1,17 +1,14 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 	import { TriangleAlert } from 'lucide-svelte';
-	interface Props {
-		children?: () => any;
-		class?: string;
-	}
+	import type { SvelteHTMLElements } from 'svelte/elements';
 
-	let { children, class: className, ...restProps }: Props = $props();
+	let { children, class: className, ...restProps }: SvelteHTMLElements['div'] = $props();
 </script>
 
 <div
 	class={cn(
-		'flex flex-row items-center gap-4 rounded-lg border border-destructive bg-secondary p-4 text-primary',
+		'flex flex-row items-center gap-4 rounded-lg border border-destructive bg-secondary p-4 text-foreground',
 		className
 	)}
 	role="alert"

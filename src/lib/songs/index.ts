@@ -1,11 +1,10 @@
-import type { Playlist, Song } from '$lib/types';
-import { mkdirSync } from 'fs';
-import { symlink, unlink, mkdir, readdir, stat } from 'fs/promises';
+import type { Song } from '$lib/types';
+import { readdir, rename, stat } from 'fs/promises';
 import { parseFile } from 'music-metadata';
 import path from 'path';
 import { searchForWorkspaceRoot } from 'vite';
-
-const getSongPathWithoutPlaylist = (path: string) => path.replace(/songs\/[^/]+\//, 'songs/');
+import { addSong, getAllSongs as getAllSongsFomDatabase, getSongFileName } from '$lib/db/song';
+// import nodeId3 from 'node-id3';
 
 const listFilesInDir = async (dir: string) => {
 	return (await readdir(path.join(__dirname, dir), { withFileTypes: true }))
@@ -13,107 +12,92 @@ const listFilesInDir = async (dir: string) => {
 		.map((item) => path.join(dir, item.name).replace(__dirname, ''));
 };
 
-const listDirsInDir = async (dir: string) => {
-	return (await readdir(path.join(__dirname, dir), { withFileTypes: true }))
-		.filter((item) => item.isDirectory())
-		.filter((item) => item.name !== '.incomplete')
-		.map((item) => path.join(dir, item.name).replace(__dirname, ''));
-};
-
 const __dirname = searchForWorkspaceRoot(import.meta.dirname);
-const songsDirName = 'songs';
-const songsDir = path.join(__dirname, songsDirName);
+export const songsDirName = 'songs';
+export const coverDirName = '.cover';
+export const incompleteDirName = '.incomplete';
+export const songsDir = path.join(__dirname, songsDirName);
+export const coverDir = path.join(songsDir, coverDirName);
+export const incompleteDir = path.join(songsDir, incompleteDirName);
 
-// Create the songs directory if it doesn't exist
-mkdirSync(path.join(songsDir, '.incomplete'), { recursive: true });
-
-function getSongId(path: string) {
-	return path.split('/').pop()?.split('.').shift();
+export function getSongIdFromFilename(path: string): string {
+	return path.split('/').pop()?.split('.').shift() as string;
 }
 
-export async function getAllSongs() {
+async function getAllSongs() {
 	const files = await listFilesInDir(songsDirName);
 	const songs: Song[] = await Promise.all(
 		files.map(async (path) => {
-			const song = await getSongInfo(path);
-			return song;
+			return await getSongInfo(path);
 		})
 	);
 
-	return songs.sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime()); // Sort by addedAt in descending order
+	return songs.sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime());
 }
 
-export async function getSongInfo(path: string): Promise<Song> {
-	path = getSongPathWithoutPlaylist(path);
-	const metadata = await parseFile(path);
-	const stats = await stat(path);
+async function getSongInfo(p: string): Promise<Song> {
+	const metadata = await parseFile(p);
+	const stats = await stat(p);
+	const id = getSongIdFromFilename(p);
 	return {
-		id: getSongId(path),
-		path: '/' + path,
+		id,
 		title: metadata.common.title,
-		artist: metadata.common.artist,
+		artist: {
+			name: metadata.common.artist
+		},
 		duration: Math.floor(metadata.format.duration),
-		album: metadata.common.album,
+		album: {
+			title: metadata.common.album
+		},
 		year: metadata.common.year,
-		cover: metadata.common.picture[0],
-		filename: path.split('/').pop(),
-		addedAt: new Date(stats.ctime)
+		mediaType: p.split('/').pop()?.split('.').pop(),
+		addedAt: new Date(stats.ctime),
+		filePath: p.startsWith('/') ? p : '/' + p
 	} as Song;
 }
 
-export async function getSongPath(songId: string) {
-	return (await listFilesInDir(songsDirName)).find((path) => getSongId(path) === songId);
-}
-
-export async function getPlaylists(): Promise<Playlist[]> {
-	const playlistsPaths = await listDirsInDir(songsDirName);
-
-	const playlists: Playlist[] = [];
-	for (const playlistsPath of playlistsPaths) {
-		const playlistName = playlistsPath.split('/').pop() as string;
-		const songs = await listFilesInDir(playlistsPath);
-		const playlistSongs = await Promise.all(
-			songs.map(async (song) => {
-				const songInfo = await getSongInfo(song);
-				return songInfo;
-			})
-		);
-		playlists.push({ name: playlistName, songs: playlistSongs });
+export async function getSongInfoFromId(id: string): Promise<Song> {
+	const files = await listFilesInDir(songsDirName);
+	const song = files.find((f) => getSongIdFromFilename(f) === id);
+	if (!song) {
+		throw new Error('Song not found');
 	}
-
-	return playlists;
+	return await getSongInfo(song);
 }
 
-export async function addSongToPlaylist(song: Song, playlistName: string) {
-	const songPath = path.join(songsDir, song.filename);
-	const newSongPath = path.join(songsDir, playlistName, song.filename);
-	await symlink(songPath, newSongPath);
+export async function saveSongCover(songId: string): Promise<string> {
+	const coverImageName = songId + '.png';
+	const coverImagePath = path.join(songsDir, coverImageName);
+	const newCoverImagePath = path.join(coverDir, coverImageName);
+	try {
+		await rename(coverImagePath, newCoverImagePath);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+	} catch (_e) {}
+
+	return '/' + path.join(songsDirName, coverDirName, coverImageName);
 }
 
-export async function removeSongFromPlaylist(song: Song, playlistName: string) {
-	const songPath = path.join(songsDir, playlistName, song.filename);
-	await unlink(songPath);
-}
+export async function refreshSongs() {
+	const songsInFS = await getAllSongs();
+	const databaseSongs = await getAllSongsFomDatabase();
+	const databaseSongsIds = databaseSongs.map((s) => s.id);
+	const newlyAddedSongsInFS = songsInFS.filter((s) => !databaseSongsIds.includes(s.id));
 
-export async function createPlaylist(playlistName: string) {
-	const playlistDir = path.join(songsDir, playlistName);
-	await mkdir(playlistDir);
-}
-
-export async function deletePlaylist(playlistName: string) {
-	const playlistDir = path.join(songsDir, playlistName);
-	await unlink(playlistDir);
-}
-
-export async function toggleSongFromPlaylist(song: Song, playlistName: string) {
-	const isInPlaylist = (await listFilesInDir(path.join(songsDirName, playlistName))).some(
-		(path) => getSongId(path) === song.id
-	);
-	if (isInPlaylist) {
-		await removeSongFromPlaylist(song, playlistName);
-	} else {
-		await addSongToPlaylist(song, playlistName);
+	for (const song of newlyAddedSongsInFS) {
+		try {
+			await saveSongCover(song.id);
+			await addSong(song);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+		} catch (_e) {}
 	}
+}
 
-	return !isInPlaylist;
+export async function editMetadata(song: Song) {
+	// TODO: Fix this
+	// await nodeId3.update(
+	// 	{
+	// 		title: song.title,
+	// 	},
+	// 	path.join(songsDir, getSongFileName(song))
+	// );
 }

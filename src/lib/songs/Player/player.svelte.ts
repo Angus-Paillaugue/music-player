@@ -1,6 +1,6 @@
 import type { Song } from '$lib/types';
 import { get } from 'svelte/store';
-import { songs } from '$lib/stores';
+import { songsToPlay } from '$lib/stores';
 
 export class Player {
 	private _playerElement: HTMLAudioElement;
@@ -9,7 +9,6 @@ export class Player {
 	private _currentTime = $state<number>(0);
 	private _percentage = $state<number>(0);
 	private _isPlaying = $state<boolean>(false);
-	private _songs: Song[] = [];
 
 	play() {
 		this._playerElement.play();
@@ -31,7 +30,7 @@ export class Player {
 
 	constructor(parent: HTMLElement) {
 		const audioComponent = document.createElement('audio');
-		if (this._song) audioComponent.src = this._song.path;
+		if (this._song) audioComponent.src = this._song.filePath;
 		audioComponent.controls = false;
 		audioComponent.autoplay = false;
 		parent.appendChild(audioComponent);
@@ -97,7 +96,7 @@ export class Player {
 
 	changeSong(song: Song) {
 		this._song = song;
-		this._playerElement.src = this._song.path;
+		this._playerElement.src = this._song.filePath;
 		this._playerElement.load();
 		this._playerElement.addEventListener(
 			'canplay',
@@ -106,9 +105,9 @@ export class Player {
 			},
 			{ once: true }
 		);
-		this._songIndex = get(songs)
-			.map((s) => s.path)
-			.indexOf(song.path);
+		this._songIndex = get(songsToPlay)
+			.map((s) => s.filePath)
+			.indexOf(song.filePath);
 	}
 
 	destroy() {
@@ -117,15 +116,15 @@ export class Player {
 
 	next() {
 		if (!this._song) return;
-		const nextIndex = (this._songIndex + 1) % get(songs).length;
-		this.changeSong(get(songs)[nextIndex]);
+		const nextIndex = (this._songIndex + 1) % get(songsToPlay).length;
+		this.changeSong(get(songsToPlay)[nextIndex]);
 		this._playerElement.dispatchEvent(new Event('songChange'));
 	}
 
 	previous() {
 		if (!this._song) return;
-		const previousIndex = (this._songIndex - 1 + get(songs).length) % get(songs).length;
-		this.changeSong(get(songs)[previousIndex]);
+		const previousIndex = (this._songIndex - 1 + get(songsToPlay).length) % get(songsToPlay).length;
+		this.changeSong(get(songsToPlay)[previousIndex]);
 		this._playerElement.dispatchEvent(new Event('songChange'));
 	}
 

@@ -1,27 +1,32 @@
+export const songFormat = ['flac', 'mp3'] as const;
+
 export interface Song {
 	id: string;
-	path: string;
 	title: string;
-	artist: string;
+	artist: Artist;
 	duration: number;
-	album?: string;
+	album?: Album;
 	year: number;
-	filename: string;
+	mediaType: (typeof songFormat)[number];
 	addedAt: Date;
-	cover: {
-		format: string;
-		type: string;
-		description: string;
-		data: Uint8Array;
-	};
+	filePath: string;
+	coverPath: string;
 }
 
 export interface Playlist {
-	name: string;
+	id: string;
+	title: string;
 	songs: Song[];
 }
 
 export interface Album {
+	id: number;
 	title: string;
 	songs: Song[];
+}
+
+export interface Artist {
+	id: number;
+	name: string;
+	songs?: Song[];
 }

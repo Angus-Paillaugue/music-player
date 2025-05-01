@@ -1,12 +1,18 @@
 <script lang="ts">
+	import { cn } from '$lib/utils';
 	import { X } from 'lucide-svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
 	import { fade, fly } from 'svelte/transition';
 
 	interface Props {
 		open: boolean;
-		children?: () => any;
 	}
-	let { open = $bindable(false), children }: Props = $props();
+	let {
+		open = $bindable(false),
+		children,
+		class: className,
+		...restProps
+	}: Props & SvelteHTMLElements['div'] = $props();
 </script>
 
 <svelte:window
@@ -28,15 +34,17 @@
 	></div>
 
 	<div
-		class="fixed left-1/2 top-1/2 z-50 w-full max-w-screen-md -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background p-4"
+		class="fixed left-1/2 top-1/2 z-50 max-h-svh w-full max-w-screen-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto p-2"
 		transition:fly={{ duration: 300, y: '100%' }}
 	>
-		<div class="relative w-full">
-			<button
-				class="absolute right-2 top-2 rounded-md p-1 hover:bg-secondary"
-				onclick={() => (open = false)}><X class="size-4" /></button
-			>
-			{@render children?.()}
+		<div class={cn('rounded-lg border bg-background p-4', className)} {...restProps}>
+			<div class="relative w-full">
+				<button
+					class="absolute right-2 top-2 rounded-md p-1 hover:bg-secondary"
+					onclick={() => (open = false)}><X class="size-4" /></button
+				>
+				{@render children?.()}
+			</div>
 		</div>
 	</div>
 {/if}

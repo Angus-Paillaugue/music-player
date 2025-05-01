@@ -1,0 +1,19 @@
+<script lang="ts">
+	import { cn } from '$lib/utils';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+
+	let {
+		value = $bindable(),
+		class: className,
+		children,
+		...restProps
+	}: SvelteHTMLElements['select'] = $props();
+
+	const baseClasses =
+		'rounded-lg px-2 py-2 text-sm font-normal text-foreground bg-secondary text-base outline-none focus:outline-none focus:ring-2 transition-all';
+	const mergedClasses = cn(baseClasses, className);
+</script>
+
+<select bind:value class={mergedClasses} {...restProps}>
+	{@render children?.()}
+</select>

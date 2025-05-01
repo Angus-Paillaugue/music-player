@@ -1,8 +1,26 @@
 # TODO:
 
-- [ ] Make album page
-- [ ] Make artist page
 - [ ] Make the sidebar responsive
 - [ ] Add loading states to actions
 - [ ] Add page loaders
-- [ ] Add ability to edit song metadata
+- [x] Toasts
+  - [x] Add them
+  - [x] Make them pretty
+- [x] Song
+  - [x] Edit metadata
+  - [x] Add to playlist
+  - [x] Delete song
+  - [x] Download
+- [ ] Album
+  - [ ] Album page
+- [ ] Artist
+  - [ ] Gather artist data
+  - [x] Artist page
+- [x] Playlist
+  - [x] Delete playlists
+  - [x] Download
+  - [x] Edit playlist name
+  - [x] Remove song from playlist
+  - [x] Fix next and previous not working as it should
+- [x] Others
+  - [x] Songs search
