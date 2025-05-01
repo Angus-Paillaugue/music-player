@@ -8,7 +8,7 @@ import type { Song } from '$lib/types';
 
 async function downloadSong(songId: string) {
 	const completeDir = './songs';
-	const incompleteDir = completeDir + '/incomplete/';
+	const incompleteDir = completeDir + '/.incomplete/';
 	if (!fs.existsSync(incompleteDir)) {
 		fs.mkdirSync(incompleteDir, { recursive: true });
 	}
@@ -24,7 +24,6 @@ async function downloadSong(songId: string) {
 	return new Promise<Song>((resolve, reject) => {
 		exec(command, async (error) => {
 			if (error) {
-
 				// Delete any incomplete file
 				const files = fs.readdirSync(incompleteDir);
 				files.forEach((file) => {
@@ -56,16 +55,15 @@ async function downloadSong(songId: string) {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { songId } = await request.json();
-  if (!songId) {
-    throw new Error('Song ID is required.');
-  }
+	const { songId } = await request.json();
+	if (!songId) {
+		throw new Error('Song ID is required.');
+	}
 
 	try {
 		const song = await downloadSong(songId);
 		return json({ song, success: true, message: 'Song downloaded successfully.' });
-	}
-	catch (error) {
+	} catch (error) {
 		return json({ success: false, message: error instanceof Error ? error.message : error });
 	}
 };

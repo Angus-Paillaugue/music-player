@@ -7,6 +7,7 @@ export interface Song {
 	album?: string;
 	year: number;
 	filename: string;
+	addedAt: Date;
 	cover: {
 		format: string;
 		type: string;
@@ -19,7 +20,6 @@ export interface Playlist {
 	name: string;
 	songs: Song[];
 }
-
 
 export interface Album {
 	title: string;
