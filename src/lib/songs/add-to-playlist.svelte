@@ -12,7 +12,7 @@
 	let { open = $bindable(false), song }: Props = $props();
 
 	async function addSongToPlaylist(playlist: Playlist) {
-		const res = await fetch(`/api/playlist/toggleSong`, {
+		const res = await fetch(`/api/playlists/playlist/toggleSong`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

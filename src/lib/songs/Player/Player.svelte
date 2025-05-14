@@ -104,6 +104,12 @@
 
 <svelte:window onkeydown={onWindowKeyDown} />
 
+<svelte:head>
+	{#if player?.song && $currentlyPlayingSong}
+		<title>{player.song.artist.name} - {$currentlyPlayingSong.title}</title>
+	{/if}
+</svelte:head>
+
 <!-- Song detail on full screen -->
 {#if isPlayerFullScreen && $currentlyPlayingSong && player?.song}
 	<div class="absolute inset-0 z-20 bg-background" transition:fly={{ y: '100%', duration: 300 }}>

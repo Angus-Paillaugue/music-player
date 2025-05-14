@@ -21,7 +21,7 @@
 
 	async function downloadPlaylist(songURL: URL, format: typeof songFormat) {
 		const response = await fetch(
-			`/api/playlist/download?playlistId=${songURL.searchParams.get('list')}&format=${format}`
+			`/api/playlists/playlist/download?playlistId=${songURL.searchParams.get('list')}&format=${format}`
 		);
 		const body = response.body as ReadableStream<Uint8Array>;
 		const reader = body.pipeThrough(new TextDecoderStream()).getReader();
@@ -87,7 +87,7 @@
 				await downloadPlaylist(songURL, format);
 			} else {
 				// Download a single song
-				const res = await fetch(`/api/song/download`, {
+				const res = await fetch(`/api/songs/song/download`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'

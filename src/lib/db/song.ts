@@ -1,8 +1,7 @@
 import { coverDirName, editMetadata, songsDirName } from '$lib/songs';
 import type { Song } from '$lib/types';
 import path from 'path';
-import db from '.';
-import { type ResultSetHeader, type RowDataPacket } from 'mysql2';
+import pool from '.';
 import { createArtist } from './artist';
 import { createAlbum } from './album';
 import { unlink } from 'fs/promises';
@@ -28,17 +27,20 @@ export async function getSongFromId(id: Song['id']): Promise<Song> {
 			s.title,
 			s.duration,
 			s.year,
-			s.addedAt,
-			s.mediaType,
-			JSON_OBJECT('id', a.id, 'name', a.name) AS artist,
-			JSON_OBJECT('id', al.id, 'title', al.title) AS album
+			s."addedAt",
+			s."mediaType",
+			json_build_object('id', a.id, 'name', a.name) AS artist,
+			json_build_object('id', al.id, 'title', al.title) AS album
 		FROM song s
-		JOIN artist a ON s.artistId = a.id
-		LEFT OUTER JOIN album al ON s.albumId = al.id
-		WHERE s.id = ?;`;
-	const [rows] = await db.execute<RowDataPacket[]>(query, [id]);
+		JOIN artist a ON s."artistId" = a.id
+		LEFT OUTER JOIN album al ON s."albumId" = al.id
+		WHERE s.id = $1;`;
+	const result = await pool.query(query, [id]);
+	if(result.rowCount === 0) {
+		throw new Error(`Song with id ${id} not found`);
+	}
 
-	return normalizeSongPaths(rows[0] as Song);
+	return normalizeSongPaths(result.rows[0] as Song);
 }
 
 export async function getAllSongs(): Promise<Song[]> {
@@ -48,43 +50,52 @@ export async function getAllSongs(): Promise<Song[]> {
 			s.title,
 			s.duration,
 			s.year,
-			s.addedAt,
-			s.mediaType,
-			JSON_OBJECT('id', a.id, 'name', a.name) AS artist,
-			JSON_OBJECT('id', al.id, 'title', al.title) AS album
+			s."addedAt",
+			s."mediaType",
+			json_build_object('id', a.id, 'name', a.name) AS artist,
+			json_build_object('id', al.id, 'title', al.title) AS album
 		FROM song s
-		JOIN artist a ON s.artistId = a.id
-		LEFT OUTER JOIN album al ON s.albumId = al.id
-		ORDER BY s.addedAt DESC;`;
-	const [songs] = await db.execute<RowDataPacket[]>(query);
-	return (songs as Song[]).map(normalizeSongPaths);
+		JOIN artist a ON s."artistId" = a.id
+		LEFT OUTER JOIN album al ON s."albumId" = al.id
+		ORDER BY s."addedAt" DESC;`;
+	const songs = await pool.query(query);
+	return (songs.rows as Song[]).map(normalizeSongPaths);
 }
 
 export async function addSong(song: Song): Promise<Song> {
-	let albumId: null | number = null;
-	if (song.album?.title) {
-		albumId = await createAlbum(song.album);
+	try {
+		let albumId: null | number = null;
+		if (song.album?.title) {
+			albumId = await createAlbum(song.album);
+			if(!albumId) {
+				throw new Error('Album creation failed');
+			}
+		}
+		const artistId = await createArtist(song.artist);
+
+		console.log(song);
+		const query =
+			'INSERT INTO song (id, title, duration, year, "mediaType", "artistId", "albumId") VALUES ($1, $2, $3, $4, $5, $6, $7);';
+		await pool.query(query, [
+			song.id,
+			song.title,
+			song.duration,
+			song.year,
+			song.mediaType,
+			artistId,
+			albumId
+		]);
+
+		return song;
+	} catch (error) {
+		console.error('Error adding song:', error);
+		throw error;
 	}
-	const artistId = await createArtist(song.artist);
-
-	const query =
-		'INSERT INTO song (id, title, duration, year, mediaType, artistId, albumId) VALUES (?, ?, ?, ?, ?, ?, ?)';
-	await db.execute<ResultSetHeader>(query, [
-		song.id,
-		song.title,
-		song.duration,
-		song.year,
-		song.mediaType,
-		artistId,
-		albumId
-	]);
-
-	return song;
 }
 
 export async function deleteSong(song: Song): Promise<void> {
-	const query = 'DELETE FROM song WHERE id = ?';
-	await db.execute(query, [song.id]);
+	const query = 'DELETE FROM song WHERE id = $1';
+	await pool.query(query, [song.id]);
 	await unlink(path.join(songsDirName, getSongFileName(song)));
 	await unlink(path.join(songsDirName, coverDirName, song.id + '.png'));
 }
@@ -92,9 +103,9 @@ export async function deleteSong(song: Song): Promise<void> {
 export async function updateSong(song: Song): Promise<void> {
 	const query = `
 		UPDATE song
-		SET title = ?, duration = ?, year = ?, mediaType = ?
-		WHERE id = ?;`;
-	await db.execute(query, [song.title, song.duration, song.year, song.mediaType, song.id]);
+		SET title = $1, duration = $2, year = $3, "mediaType" = $4
+		WHERE id = $5;`;
+	await pool.query(query, [song.title, song.duration, song.year, song.mediaType, song.id]);
 
 	// TODO: make this work
 	await editMetadata(song);

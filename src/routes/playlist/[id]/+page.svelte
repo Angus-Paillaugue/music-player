@@ -24,7 +24,7 @@
 		e.preventDefault();
 		isSavingPlaylist = true;
 
-		const res = await fetch(`/api/playlist/save`, {
+		const res = await fetch(`/api/playlists/playlist/save`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'

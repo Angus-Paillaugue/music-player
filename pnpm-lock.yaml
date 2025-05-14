@@ -17,6 +17,9 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.10.2
+      '@types/pg':
+        specifier: ^8.11.14
+        version: 8.11.14
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -32,6 +35,9 @@ importers:
       node-id3:
         specifier: ^0.2.6
         version: 0.2.6
+      pg:
+        specifier: ^8.15.6
+        version: 8.15.6
       puppeteer:
         specifier: ^23.11.1
         version: 23.11.1(typescript@5.7.2)
@@ -445,10 +451,10 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@sveltejs/adapter-node@5.2.11':
-    resolution: {integrity: sha512-lR7/dfUaKFf3aI408KRDy/BVDYoqUws7zNOJz2Hl4JoshlTnMgdha3brXBRFXB+cWtYvJjjPhvmq3xqpbioi4w==}
+  '@sveltejs/adapter-auto@3.3.1':
+    resolution: {integrity: sha512-5Sc7WAxYdL6q9j/+D0jJKjGREGlfIevDyHSQ2eNETHcB1TKlQWHcAo8AS8H1QdjNvSXpvOwNjykDUHPEAyGgdQ==}
     peerDependencies:
-      '@sveltejs/kit': ^2.4.0
+      '@sveltejs/kit': ^2.0.0
 
   '@sveltejs/kit@2.13.0':
     resolution: {integrity: sha512-6t6ne00vZx/TjD6s0Jvwt8wRLKBwbSAN1nhlOzcLUSTYX1hTp4eCBaTPB5Yz/lu+tYcvz4YPEEuPv3yfsNp2gw==}
@@ -499,6 +505,9 @@ packages:
 
   '@types/node@22.10.2':
     resolution: {integrity: sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==}
+
+  '@types/pg@8.11.14':
+    resolution: {integrity: sha512-qyD11E5R3u0eJmd1lB0WnWKXJGA7s015nyARWljfz5DcX83TKAIlY+QrmvzQTsbIe+hkiFtkyL2gHC6qwF6Fbg==}
 
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -724,9 +733,6 @@ packages:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
 
-  commondir@1.0.1:
-    resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
-
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -914,9 +920,6 @@ packages:
   estraverse@5.3.0:
     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
     engines: {node: '>=4.0'}
-
-  estree-walker@2.0.2:
-    resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
@@ -1112,9 +1115,6 @@ packages:
     resolution: {integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==}
     engines: {node: '>=0.10.0'}
 
-  is-module@1.0.0:
-    resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
-
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
@@ -1308,6 +1308,9 @@ packages:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
     engines: {node: '>= 6'}
 
+  obuf@1.1.2:
+    resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
+
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
@@ -1363,6 +1366,48 @@ packages:
 
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
+
+  pg-cloudflare@1.2.5:
+    resolution: {integrity: sha512-OOX22Vt0vOSRrdoUPKJ8Wi2OpE/o/h9T8X1s4qSkCedbNah9ei2W2765be8iMVxQUsvgT7zIAT2eIa9fs5+vtg==}
+
+  pg-connection-string@2.8.5:
+    resolution: {integrity: sha512-Ni8FuZ8yAF+sWZzojvtLE2b03cqjO5jNULcHFfM9ZZ0/JXrgom5pBREbtnAw7oxsxJqHw9Nz/XWORUEL3/IFow==}
+
+  pg-int8@1.0.1:
+    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
+    engines: {node: '>=4.0.0'}
+
+  pg-numeric@1.0.2:
+    resolution: {integrity: sha512-BM/Thnrw5jm2kKLE5uJkXqqExRUY/toLHda65XgFTBTFYZyopbKjBe29Ii3RbkvlsMoFwD+tHeGaCjjv0gHlyw==}
+    engines: {node: '>=4'}
+
+  pg-pool@3.9.6:
+    resolution: {integrity: sha512-rFen0G7adh1YmgvrmE5IPIqbb+IgEzENUm+tzm6MLLDSlPRoZVhzU1WdML9PV2W5GOdRA9qBKURlbt1OsXOsPw==}
+    peerDependencies:
+      pg: '>=8.0'
+
+  pg-protocol@1.9.5:
+    resolution: {integrity: sha512-DYTWtWpfd5FOro3UnAfwvhD8jh59r2ig8bPtc9H8Ds7MscE/9NYruUQWFAOuraRl29jwcT2kyMFQ3MxeaVjUhg==}
+
+  pg-types@2.2.0:
+    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
+    engines: {node: '>=4'}
+
+  pg-types@4.0.2:
+    resolution: {integrity: sha512-cRL3JpS3lKMGsKaWndugWQoLOCoP+Cic8oseVcbr0qhPzYD5DWXK+RZ9LY9wxRf7RQia4SCwQlXk0q6FCPrVng==}
+    engines: {node: '>=10'}
+
+  pg@8.15.6:
+    resolution: {integrity: sha512-yvao7YI3GdmmrslNVsZgx9PfntfWrnXwtR+K/DjI0I/sTKif4Z623um+sjVZ1hk5670B+ODjvHDAckKdjmPTsg==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      pg-native: '>=3.0.1'
+    peerDependenciesMeta:
+      pg-native:
+        optional: true
+
+  pgpass@1.0.5:
+    resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -1447,6 +1492,41 @@ packages:
   postcss@8.4.49:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
+
+  postgres-array@2.0.0:
+    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
+    engines: {node: '>=4'}
+
+  postgres-array@3.0.4:
+    resolution: {integrity: sha512-nAUSGfSDGOaOAEGwqsRY27GPOea7CNipJPOA7lPbdEpx5Kg3qzdP0AaWC5MlhTWV9s4hFX39nomVZ+C4tnGOJQ==}
+    engines: {node: '>=12'}
+
+  postgres-bytea@1.0.0:
+    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-bytea@3.0.0:
+    resolution: {integrity: sha512-CNd4jim9RFPkObHSjVHlVrxoVQXz7quwNFpz7RY1okNNme49+sVyiTvTRobiLV548Hx/hb1BG+iE7h9493WzFw==}
+    engines: {node: '>= 6'}
+
+  postgres-date@1.0.7:
+    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-date@2.1.0:
+    resolution: {integrity: sha512-K7Juri8gtgXVcDfZttFKVmhglp7epKb1K4pgrkLxehjqkrgPhfG6OO8LHLkfaqkbpjNRnra018XwAr1yQFWGcA==}
+    engines: {node: '>=12'}
+
+  postgres-interval@1.2.0:
+    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-interval@3.0.0:
+    resolution: {integrity: sha512-BSNDnbyZCXSxgA+1f5UU2GmwhoI0aU5yMxRGO8CdFEcY2BQF9xm/7MqKnYoM1nJDk8nONNWDk9WeSmePFhQdlw==}
+    engines: {node: '>=12'}
+
+  postgres-range@1.1.4:
+    resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -1640,6 +1720,10 @@ packages:
   source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
+
+  split2@4.2.0:
+    resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
+    engines: {node: '>= 10.x'}
 
   sprintf-js@1.1.3:
     resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
@@ -1878,6 +1962,10 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  xtend@4.0.2:
+    resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
+    engines: {node: '>=0.4'}
 
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
@@ -2168,13 +2256,10 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@sveltejs/adapter-node@5.2.11(@sveltejs/kit@2.13.0(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))':
+  '@sveltejs/adapter-auto@3.3.1(@sveltejs/kit@2.13.0(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))':
     dependencies:
-      '@rollup/plugin-commonjs': 28.0.2(rollup@4.28.1)
-      '@rollup/plugin-json': 6.1.0(rollup@4.28.1)
-      '@rollup/plugin-node-resolve': 16.0.0(rollup@4.28.1)
       '@sveltejs/kit': 2.13.0(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2))
-      rollup: 4.28.1
+      import-meta-resolve: 4.1.0
 
   '@sveltejs/kit@2.13.0(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2)))(svelte@5.15.0)(vite@5.4.11(@types/node@22.10.2))':
     dependencies:
@@ -2238,6 +2323,12 @@ snapshots:
   '@types/node@22.10.2':
     dependencies:
       undici-types: 6.20.0
+
+  '@types/pg@8.11.14':
+    dependencies:
+      '@types/node': 22.10.2
+      pg-protocol: 1.9.5
+      pg-types: 4.0.2
 
   '@types/yauzl@2.10.3':
     dependencies:
@@ -2490,8 +2581,6 @@ snapshots:
 
   commander@4.1.1: {}
 
-  commondir@1.0.1: {}
-
   concat-map@0.0.1: {}
 
   content-type@1.0.5: {}
@@ -2710,8 +2799,6 @@ snapshots:
 
   estraverse@5.3.0: {}
 
-  estree-walker@2.0.2: {}
-
   esutils@2.0.3: {}
 
   extract-zip@2.0.1:
@@ -2905,8 +2992,6 @@ snapshots:
     dependencies:
       is-extglob: 2.1.1
 
-  is-module@1.0.0: {}
-
   is-number@7.0.0: {}
 
   is-property@1.0.2: {}
@@ -3071,6 +3156,8 @@ snapshots:
 
   object-hash@3.0.0: {}
 
+  obuf@1.1.2: {}
+
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
@@ -3138,6 +3225,53 @@ snapshots:
 
   pend@1.2.0: {}
 
+  pg-cloudflare@1.2.5:
+    optional: true
+
+  pg-connection-string@2.8.5: {}
+
+  pg-int8@1.0.1: {}
+
+  pg-numeric@1.0.2: {}
+
+  pg-pool@3.9.6(pg@8.15.6):
+    dependencies:
+      pg: 8.15.6
+
+  pg-protocol@1.9.5: {}
+
+  pg-types@2.2.0:
+    dependencies:
+      pg-int8: 1.0.1
+      postgres-array: 2.0.0
+      postgres-bytea: 1.0.0
+      postgres-date: 1.0.7
+      postgres-interval: 1.2.0
+
+  pg-types@4.0.2:
+    dependencies:
+      pg-int8: 1.0.1
+      pg-numeric: 1.0.2
+      postgres-array: 3.0.4
+      postgres-bytea: 3.0.0
+      postgres-date: 2.1.0
+      postgres-interval: 3.0.0
+      postgres-range: 1.1.4
+
+  pg@8.15.6:
+    dependencies:
+      pg-connection-string: 2.8.5
+      pg-pool: 3.9.6(pg@8.15.6)
+      pg-protocol: 1.9.5
+      pg-types: 2.2.0
+      pgpass: 1.0.5
+    optionalDependencies:
+      pg-cloudflare: 1.2.5
+
+  pgpass@1.0.5:
+    dependencies:
+      split2: 4.2.0
+
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -3200,6 +3334,28 @@ snapshots:
       nanoid: 3.3.8
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postgres-array@2.0.0: {}
+
+  postgres-array@3.0.4: {}
+
+  postgres-bytea@1.0.0: {}
+
+  postgres-bytea@3.0.0:
+    dependencies:
+      obuf: 1.1.2
+
+  postgres-date@1.0.7: {}
+
+  postgres-date@2.1.0: {}
+
+  postgres-interval@1.2.0:
+    dependencies:
+      xtend: 4.0.2
+
+  postgres-interval@3.0.0: {}
+
+  postgres-range@1.1.4: {}
 
   prelude-ls@1.2.1: {}
 
@@ -3367,6 +3523,8 @@ snapshots:
 
   source-map@0.6.1:
     optional: true
+
+  split2@4.2.0: {}
 
   sprintf-js@1.1.3: {}
 
@@ -3620,6 +3778,8 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@8.18.0: {}
+
+  xtend@4.0.2: {}
 
   y18n@5.0.8: {}
 

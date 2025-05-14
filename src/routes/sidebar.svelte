@@ -19,7 +19,7 @@
 		const formData = new FormData(form);
 		const title = formData.get('title') as string;
 		if (!title) return;
-		const res = await fetch('/api/playlist/create', {
+		const res = await fetch('/api/playlists/playlist/create', {
 			method: 'POST',
 			body: JSON.stringify({ title }),
 			headers: { 'Content-Type': 'application/json' }

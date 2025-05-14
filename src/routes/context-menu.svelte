@@ -37,7 +37,7 @@
 	async function deleteSong() {
 		if (!track) return;
 		isDeletingTrack = true;
-		const res = await fetch(`/api/song/${track.id}/delete`, {
+		const res = await fetch(`/api/songs/song/${track.id}/delete`, {
 			method: 'DELETE'
 		});
 
@@ -61,7 +61,7 @@
 		e.preventDefault();
 		if (!track) return;
 		isEditingSong = true;
-		const res = await fetch(`/api/song/${track.id}/edit`, {
+		const res = await fetch(`/api/songs/song/${track.id}/edit`, {
 			body: JSON.stringify({ updatedTrack }),
 			method: 'PUT'
 		});
@@ -70,7 +70,7 @@
 			console.error('Failed to edit song');
 			toast.error('Failed to edit song');
 			return;
-		} else {
+		} else if(updatedTrack) {
 			const index = $songs.findIndex((song) => song.id === updatedTrack.id);
 			$songs[index] = updatedTrack;
 			toast.success('Song edited successfully');

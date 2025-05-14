@@ -4,7 +4,7 @@ import { getAllPlaylists } from '$lib/db/playlist';
 import { getAllAlbums } from '$lib/db/album';
 import { bootstrap } from '$lib/bootstrap';
 
-export const load = (async () => {
+export const load = (async ({ fetch }) => {
 	await bootstrap();
 	const songs = await getAllSongs();
 	const playlists = await getAllPlaylists();

@@ -33,7 +33,7 @@
 		e.preventDefault();
 		const playlistId = page.params.id;
 
-		const res = await fetch(`/api/playlist/${playlistId}/removeSong`, {
+		const res = await fetch(`/api/playlists/playlist/${playlistId}/removeSong`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
